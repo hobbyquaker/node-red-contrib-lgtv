@@ -1,0 +1,37 @@
+<script type="text/javascript">
+    RED.nodes.registerType('lgtv-toast', {
+        category: 'LGTV',
+        color: '#5577ff',
+        inputs: 1,
+        defaults: {
+            tv: {
+                value: '',
+                type: 'lgtv-config',
+                required: true
+            },
+            name: {
+                value: ''
+            }
+        },
+        label: function() {
+            return this.name || 'Toast';
+        },
+        paletteLabel: 'Toast'
+    });
+</script>
+
+<script type="text/x-red" data-template-name="lgtv-toast">
+    <div class="form-row">
+        <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
+        <input type="text" id="node-input-tv">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-bookmark"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="lgtv-toast">
+    <p>Shows a Toast (Popup in the upper right corner).</p>
+    <p><code>msg.payload</code> can be any string, a few HTML elements are allowed also.</p>
+</script>

@@ -1,0 +1,52 @@
+<script type="text/javascript">
+    RED.nodes.registerType('lgtv-control', {
+        category: 'LGTV',
+        color: '#5577ff',
+        inputs: 1,
+        defaults: {
+            tv: {
+                value: '',
+                type: 'lgtv-config',
+                required: true
+            },
+            name: {
+                value: ''
+            }
+        },
+        label: function() {
+            return this.name || 'Control';
+        },
+        paletteLabel: 'Control'
+    });
+</script>
+
+<script type="text/x-red" data-template-name="lgtv-control">
+    <div class="form-row">
+        <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
+        <input type="text" id="node-input-tv">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-bookmark"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="lgtv-control">
+    <p>Various Controls</p>
+    <p><code>msg.payload</code> can be one of:
+        <ul>
+            <li>turnOff</li>
+            <li>play</li>
+            <li>pause</li>
+            <li>stop</li>
+            <li>rewind</li>
+            <li>fastForward</li>
+            <li>volumeUp</li>
+            <li>volumeDown</li>
+            <li>channelUp</li>
+            <li>channelDown</li>
+            <li>set3DOn</li>
+            <li>set3DOff</li>
+        </ul>
+    </p>
+</script>

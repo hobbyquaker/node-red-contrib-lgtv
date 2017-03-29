@@ -1,0 +1,34 @@
+<script type="text/javascript">
+    RED.nodes.registerType('lgtv-config', {
+        category: 'config',
+        defaults: {
+            host: {
+                value: 'lgwebostv',
+                required: true
+            }
+        },
+        credentials: {
+            token: {
+                type: 'text'
+            }
+        },
+        label: function() {
+            return this.host;
+        },
+        oneditprepare: function () {
+      
+        }
+
+    });
+</script>
+
+<script type="text/x-red" data-template-name="lgtv-config">
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
+        <input type="text" id="node-config-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-token"><i class="icon-bookmark"></i> Token</label>
+        <input type="text" id="node-config-input-token">
+    </div>
+</script>

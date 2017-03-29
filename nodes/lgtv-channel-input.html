@@ -1,0 +1,47 @@
+<script type="text/javascript">
+    RED.nodes.registerType('lgtv-channel-input', {
+        category: 'LGTV',
+        color: '#5577ff',
+        outputs: 1,
+        defaults: {
+            tv: {
+                value: '',
+                type: 'lgtv-config',
+                required: true
+            },
+            name: {
+                value: ''
+            },
+            payloadType: {
+                value: 'channelNumber'
+            }
+        },
+        label: function() {
+            return this.name || 'Channel';
+        },
+        paletteLabel: 'Channel'
+    });
+</script>
+
+<script type="text/x-red" data-template-name="lgtv-channel-input">
+    <div class="form-row">
+        <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
+        <input type="text" id="node-input-tv">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-bookmark"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+     <div class="form-row">
+        <label for="node-input-payloadType"><i class="icon-bookmark"></i> Payload</label>
+        <select id="node-input-payloadType">
+            <option value="channelNumber">channelNumber</option>
+            <option value="channelName">channelName</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="lgtv-channel-input">
+    <p>Outputs the LiveTV Channel.</p>
+    <p><code>msg.payload</code> contains the Channel Number or Name, misc Information is added to the msg.</p>
+</script>
