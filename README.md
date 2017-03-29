@@ -19,7 +19,9 @@ restart of Node-RED)
 
 * Fix Known Issues
 * More Documentation
-* Button and Mouse support (needs a "Specialized Socket")
+* Button and Mouse support 
+* Icons for the Nodes
+
 
 Pull Requests welcome! :-)
 
