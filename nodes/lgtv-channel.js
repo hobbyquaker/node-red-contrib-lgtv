@@ -42,7 +42,6 @@ module.exports = function (RED) {
 
             node.on('input', function (msg) {
                 node.tvConn.request('ssap://tv/openChannel', {channelId: msg.payload}, function (err, res) {
-                    console.log(err, res);
                     if (!err && !res.errorCode && node.passthru) node.send(msg);
                 });
             });
