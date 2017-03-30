@@ -1,8 +1,9 @@
 <script type="text/javascript">
-    RED.nodes.registerType('lgtv-app-input', {
+    RED.nodes.registerType('lgtv-app', {
         category: 'LGTV',
         color: '#5577ff',
         outputs: 1,
+        inputs: 1,
         defaults: {
             tv: {
                 value: '',
@@ -20,7 +21,7 @@
     });
 </script>
 
-<script type="text/x-red" data-template-name="lgtv-app-input">
+<script type="text/x-red" data-template-name="lgtv-app">
     <div class="form-row">
         <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
         <input type="text" id="node-input-tv">
@@ -31,8 +32,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="lgtv-app-output">
-    <p>Outputs which App is currently running.</p>
+<script type="text/x-red" data-help-name="lgtv-app">
     <p><code>msg.payload</code> Examples:
         <ul>
             <li>netflix</li>

@@ -1,7 +1,8 @@
 <script type="text/javascript">
-    RED.nodes.registerType('lgtv-channel-input', {
+    RED.nodes.registerType('lgtv-channel', {
         category: 'LGTV',
         color: '#5577ff',
+        inputs: 1,
         outputs: 1,
         defaults: {
             tv: {
@@ -23,7 +24,7 @@
     });
 </script>
 
-<script type="text/x-red" data-template-name="lgtv-channel-input">
+<script type="text/x-red" data-template-name="lgtv-channel">
     <div class="form-row">
         <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
         <input type="text" id="node-input-tv">
@@ -41,7 +42,8 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="lgtv-channel-input">
+<script type="text/x-red" data-help-name="lgtv-channel">
     <p>Outputs the LiveTV Channel.</p>
-    <p><code>msg.payload</code> contains the Channel Number or Name, misc Information is added to the msg.</p>
+    <p><code>msg.payload</code> contains the Channel Number or Name, misc information is provided in several other msg
+    attributes.</p>
 </script>

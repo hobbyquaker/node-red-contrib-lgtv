@@ -23,15 +23,13 @@
     "nodes": {
        "lgtv-config": "nodes/lgtv-config.js",
        "lgtv-control": "nodes/lgtv-control.js",
+       "lgtv-button": "nodes/lgtv-button.js",
+       "lgtv-mouse": "nodes/lgtv-mouse.js",
        "lgtv-toast": "nodes/lgtv-toast.js",
-       "lgtv-app-input": "nodes/lgtv-app-input.js",
-       "lgtv-app-output": "nodes/lgtv-app-output.js",
-       "lgtv-volume-input": "nodes/lgtv-volume-input.js",
-       "lgtv-volume-output": "nodes/lgtv-volume-output.js",
-       "lgtv-mute-input": "nodes/lgtv-mute-input.js",
-       "lgtv-mute-output": "nodes/lgtv-mute-output.js",
-       "lgtv-channel-input": "nodes/lgtv-channel-input.js",
-       "lgtv-channel-output": "nodes/lgtv-channel-output.js"
+       "lgtv-app": "nodes/lgtv-app.js",
+       "lgtv-volume": "nodes/lgtv-volume.js",
+       "lgtv-mute": "nodes/lgtv-mute.js",
+       "lgtv-channel": "nodes/lgtv-channel.js"
     }
   }
 }

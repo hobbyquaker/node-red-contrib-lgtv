@@ -1,5 +1,3 @@
-
-
 module.exports = function (RED) {
 
     function LgtvConfigNode(config) {
@@ -28,13 +26,23 @@ module.exports = function (RED) {
         });
         lgtv.on('connect', function () {
             node.setStatus('connect');
-            node.emit('connect');
             node.connected = true;
+
             for (var url in subscriptions) {
                 lgtv.subscribe(url, function (err, res) {
                     node.subscriptionHandler(url, err, res);
                 });
             }
+
+            lgtv.getSocket('ssap://com.webos.service.networkinput/getPointerInputSocket',
+                function (err, sock) {
+                    if (!err) {
+                        node.buttonSocket = sock;
+                    }
+                }
+            );
+
+            node.emit('tvconnect');
 
         });
         lgtv.on('error', function (e) {
@@ -43,7 +51,9 @@ module.exports = function (RED) {
 
         });
         lgtv.on('close', function () {
+            node.emit('tvclose');
             node.connected = false;
+            node.buttonSocket = null;
             node.setStatus('close');
         });
         lgtv.on('prompt', function () {
@@ -105,7 +115,6 @@ module.exports = function (RED) {
             done();
         };
 
-
         this.setStatus = function (c) {
             var status;
             switch (c) {
@@ -151,10 +160,8 @@ module.exports = function (RED) {
             }
 
         }
-
-
-
     }
+
     RED.nodes.registerType('lgtv-config', LgtvConfigNode, {
         credentials: {
             token: {type: 'text'}

@@ -9,7 +9,6 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-
             this.on('close', function (done) {
                 node.tvConn.deregister(node, done);
             });
@@ -44,12 +43,16 @@ module.exports = function (RED) {
                     case 'turnOff':
                         url = 'ssap://system/' + msg.payload;
                         break;
-
-                            
-                    default:
-
                 }
                 if (url) node.tvConn.request(url);
+            });
+
+            node.tvConn.on('tvconnect', function () {
+                node.send({payload: true});
+            });
+
+            node.tvConn.on('tvclose', function () {
+                node.send({payload: false});
             });
 
         } else {

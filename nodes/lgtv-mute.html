@@ -1,8 +1,9 @@
 <script type="text/javascript">
-    RED.nodes.registerType('lgtv-volume-input', {
+    RED.nodes.registerType('lgtv-mute', {
         category: 'LGTV',
         color: '#5577ff',
         outputs: 1,
+        inputs: 1,
         defaults: {
             tv: {
                 value: '',
@@ -14,13 +15,13 @@
             }
         },
         label: function() {
-            return this.name || 'Volume';
+            return this.name || 'Mute';
         },
-        paletteLabel: 'Volume'
+        paletteLabel: 'Mute'
     });
 </script>
 
-<script type="text/x-red" data-template-name="lgtv-volume-input">
+<script type="text/x-red" data-template-name="lgtv-mute">
     <div class="form-row">
         <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
         <input type="text" id="node-input-tv">
