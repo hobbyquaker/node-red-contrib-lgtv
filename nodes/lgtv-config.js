@@ -6,14 +6,12 @@ module.exports = function (RED) {
         var node = this;
 
         node.host =         config.host;
-
         node.users = {};
 
         var lgtv = require("lgtv2")({
             url: 'ws://' + node.host + ':3000',
             clientKey: node.credentials.token,
             saveKey: function (key, cb) {
-                console.log('saveKey', key, node.id);
                 RED.nodes.addCredentials(node.id, {
                     token: key
                 });
@@ -24,6 +22,7 @@ module.exports = function (RED) {
         lgtv.on('connecting', function () {
             node.setStatus('connecting');
         });
+
         lgtv.on('connect', function () {
             node.setStatus('connect');
             node.connected = true;
@@ -45,17 +44,20 @@ module.exports = function (RED) {
             node.emit('tvconnect');
 
         });
+
         lgtv.on('error', function (e) {
             node.connected = false;
             node.setStatus(e.code)
 
         });
+
         lgtv.on('close', function () {
             node.emit('tvclose');
             node.connected = false;
             node.buttonSocket = null;
             node.setStatus('close');
         });
+
         lgtv.on('prompt', function () {
             node.setStatus('prompt');
         });
@@ -87,7 +89,6 @@ module.exports = function (RED) {
                 lgtv.request(url, payload, callback);
             }
         };
-
 
         this.register = function (lgtvNode) {
             node.users[lgtvNode.id] = lgtvNode;
@@ -153,12 +154,12 @@ module.exports = function (RED) {
                         text: c
                     };
             }
+
             for (var id in node.users) {
                 if (node.users.hasOwnProperty(id)) {
                     node.users[id].status(status);
                 }
             }
-
         }
     }
 
