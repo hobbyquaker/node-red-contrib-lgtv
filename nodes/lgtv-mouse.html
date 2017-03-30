@@ -1,0 +1,43 @@
+<script type="text/javascript">
+    RED.nodes.registerType('lgtv-mouse', {
+        category: 'LGTV',
+        color: '#5577ff',
+        inputs: 1,
+        defaults: {
+            tv: {
+                value: '',
+                type: 'lgtv-config',
+                required: true
+            },
+            name: {
+                value: ''
+            }
+        },
+        label: function() {
+            return this.name || 'Mouse';
+        },
+        paletteLabel: 'Mouse'
+    });
+</script>
+
+<script type="text/x-red" data-template-name="lgtv-mouse">
+    <div class="form-row">
+        <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
+        <input type="text" id="node-input-tv">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-bookmark"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="lgtv-mouse">
+    <p>Mouse Controls</p>
+    <table>
+        <tr><th>msg.topic</th><th>msg.payload</th><th></th></tr>
+        <tr><th>click</th><th></th><th></th></tr>
+        <tr><th>move</th><th>{dx: &lt;number&gt;, dy: &lt;number&gt;}</th><th></th></tr>
+        <tr><th>drag</th><th>{dx: &lt;number&gt;, dy: &lt;number&gt;}</th><th></th></tr>
+        <tr><th>scroll</th><th>{dx: &lt;number&gt;, dy: &lt;number&gt;}</th><th></th></tr>
+    </table>
+</script>
