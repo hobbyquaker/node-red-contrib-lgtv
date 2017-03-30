@@ -14,7 +14,9 @@ module.exports = function (RED) {
             });
 
             node.on('input', function (msg) {
-                if (msg.payload && node.tvConn.buttonSocket) node.tvConn.buttonSocket.send('button', ('' + msg.payload).toUpperCase());
+                if (msg.payload && node.tvConn.buttonSocket) {
+                    node.tvConn.buttonSocket.send('button', {name: ('' + msg.payload).toUpperCase()});
+                }
             });
 
         } else {
