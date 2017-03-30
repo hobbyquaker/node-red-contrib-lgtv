@@ -41,8 +41,8 @@ module.exports = function (RED) {
             }
 
             node.on('input', function (msg) {
-                // FIXME
-                node.tvConn.request('ssap://tv/openChannel', {channelNumber: msg.payload}, function (err, res) {
+                node.tvConn.request('ssap://tv/openChannel', {channelId: msg.payload}, function (err, res) {
+                    console.log(err, res);
                     if (!err && !res.errorCode && node.passthru) node.send(msg);
                 });
             });

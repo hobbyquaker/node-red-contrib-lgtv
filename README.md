@@ -12,7 +12,6 @@
 * After the first successful connect to your TV you have to open the config node and click update again (otherwise the
 connection token received from the TV will not be saved and you have to awnser the prompt on your TV again after a
 restart of Node-RED)
-* The Channel Output Node doesn't work yet.
 
 
 ## Todo

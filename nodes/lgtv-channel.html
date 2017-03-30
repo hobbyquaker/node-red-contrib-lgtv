@@ -37,8 +37,9 @@
         <input type="text" id="node-input-name">
     </div>
      <div class="form-row">
-        <label for="node-input-payloadType"><i class="icon-bookmark"></i> Payload</label>
+        <label for="node-input-payloadType"><i class="icon-bookmark"></i> Output Payload</label>
         <select id="node-input-payloadType">
+            <option value="channelId">channelId</option>
             <option value="channelNumber">channelNumber</option>
             <option value="channelName">channelName</option>
         </select>
@@ -52,6 +53,5 @@
 
 <script type="text/x-red" data-help-name="lgtv-channel">
     <p>Outputs the LiveTV Channel.</p>
-    <p><code>msg.payload</code> contains the Channel Number or Name, misc information is provided in several other msg
-    attributes.</p>
+    <p>You need to send the <code>channelId</code> string as <code>msg.payload</code></p>
 </script>
