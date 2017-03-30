@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('lgtv-channel-output', {
+    RED.nodes.registerType('lgtv-button', {
         category: 'LGTV',
         color: '#5577ff',
         inputs: 1,
@@ -14,13 +14,13 @@
             }
         },
         label: function() {
-            return this.name || 'Channel';
+            return this.name || 'Button';
         },
-        paletteLabel: 'Channel'
+        paletteLabel: 'Button'
     });
 </script>
 
-<script type="text/x-red" data-template-name="lgtv-channel-output">
+<script type="text/x-red" data-template-name="lgtv-button">
     <div class="form-row">
         <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
         <input type="text" id="node-input-tv">
@@ -31,7 +31,11 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="lgtv-channel-output">
-    <p>Switch the LiveTV Channel.</p>
-    <p><code>msg.payload</code> has to be the channel number</p>
+<script type="text/x-red" data-help-name="lgtv-button">
+    <p>Press a Button</p>
+    <p>
+        <code>msg.payload</code> can be one of:<br>
+        MUTE, RED, GREEN, YELLOW, BLUE, HOME, MENU, VOLUMEUP, VOLUMEDOWN, CHANNELUP, CHANNELDOWN, *, CC, BACK, UP, DOWN,
+        LEFT, ENTER, DASH, 0-9, EXIT
+    </p>
 </script>

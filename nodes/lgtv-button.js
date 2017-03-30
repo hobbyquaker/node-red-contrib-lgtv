@@ -1,6 +1,6 @@
 module.exports = function (RED) {
 
-    function LgtvVolumeOutputNode(n) {
+    function LgtvButtonNode(n) {
         RED.nodes.createNode(this, n);
         var node = this;
         this.tv = n.tv;
@@ -14,7 +14,7 @@ module.exports = function (RED) {
             });
 
             node.on('input', function (msg) {
-                node.tvConn.request('ssap://audio/setVolume', {volume: msg.payload});
+                if (msg.payload && node.tvConn.buttonSocket) node.tvConn.buttonSocket.send('button', ('' + msg.payload).toUpperCase());
             });
 
         } else {
@@ -22,5 +22,5 @@ module.exports = function (RED) {
         }
 
     }
-    RED.nodes.registerType('lgtv-volume-output', LgtvVolumeOutputNode);
+    RED.nodes.registerType('lgtv-button', LgtvButtonNode);
 };
