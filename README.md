@@ -19,7 +19,6 @@ restart of Node-RED)
 
 * Fix Known Issues
 * More Documentation
-* Button and Mouse support 
 * Icons for the Nodes
 
 
