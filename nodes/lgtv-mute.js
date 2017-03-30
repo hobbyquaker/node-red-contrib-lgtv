@@ -5,6 +5,7 @@ module.exports = function (RED) {
         var node = this;
         this.tv = n.tv;
         this.tvConn = RED.nodes.getNode(this.tv);
+        this.passthru = n.passthru;
 
         if (this.tvConn) {
             this.tvConn.register(node);
@@ -28,7 +29,10 @@ module.exports = function (RED) {
             }
 
             node.on('input', function (msg) {
-                node.tvConn.request('ssap://audio/setMute', {mute: msg.payload});
+                msg.payload = !!msg.payload;
+                node.tvConn.request('ssap://audio/setMute', {mute: msg.payload}, function (err, res) {
+                    if (!err && !res.errorCode && node.passthru) node.send(msg);
+                });
             });
 
         } else {

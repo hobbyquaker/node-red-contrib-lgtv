@@ -5,6 +5,7 @@ module.exports = function (RED) {
         var node = this;
         this.tv = n.tv;
         this.payloadType = n.payloadType;
+        this.passthru = n.passthru;
 
         this.tvConn = RED.nodes.getNode(this.tv);
 
@@ -41,7 +42,9 @@ module.exports = function (RED) {
 
             node.on('input', function (msg) {
                 // FIXME
-                node.tvConn.request('ssap://tv/openChannel', {channelNumber: msg.payload});
+                node.tvConn.request('ssap://tv/openChannel', {channelNumber: msg.payload}, function (err, res) {
+                    if (!err && !res.errorCode && node.passthru) node.send(msg);
+                });
             });
 
         } else {

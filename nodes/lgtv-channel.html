@@ -15,6 +15,9 @@
             },
             payloadType: {
                 value: 'channelNumber'
+            },
+            passthru: {
+                value: true
             }
         },
         label: function() {
@@ -39,6 +42,11 @@
             <option value="channelNumber">channelNumber</option>
             <option value="channelName">channelName</option>
         </select>
+    </div>
+    </div>
+        <div class="form-row">
+        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> Pass <code>msg</code> through to output after successfully sending to TV: </label>
+        <input type="checkbox" checked id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:baseline;">
     </div>
 </script>
 
