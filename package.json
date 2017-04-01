@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "eslint-plugin-html": "^2.0.1",
-    "jshint": "^2.9.4",
     "xo": "^0.18.1"
   }
 }
