@@ -28,8 +28,11 @@ Some of the nodes have an output, so you can subscribe to events:
 
 ## Setup
 
-For the initial configuration of `lgtv-config` you just need the Hostname or IP-Address of your TV and click *Connect*. 
-The token should be filled automatically on first connect.
+You need to allow "LG Connect Apps" on your TV - see 
+http://www.lg.com/uk/support/product-help/CT00008334-1437131798537-others
+
+For the initial configuration you then just need the Hostname or IP-Address of your TV and 
+click *Connect* in the `lgtv-config` node. The token should be filled automatically on first connect.
 
 **Note**: After turning on the TV it takes ~25 seconds until the API is available.
 
