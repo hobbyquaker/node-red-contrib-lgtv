@@ -1,0 +1,39 @@
+<script type="text/javascript">
+    RED.nodes.registerType('lgtv-youtube', {
+        category: 'lgtv',
+        color: '#C0DEED',
+        inputs: 1,
+        defaults: {
+            tv: {
+                value: '',
+                type: 'lgtv-config',
+                required: true
+            },
+            name: {
+                value: ''
+            }
+        },
+        label: function () {
+            return this.name || 'youtube';
+        },
+        icon: 'lgtv-youtube.png',
+        paletteLabel: 'youtube',
+        align: 'right'
+    });
+</script>
+
+<script type="text/x-red" data-template-name="lgtv-youtube">
+    <div class="form-row">
+        <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
+        <input type="text" id="node-input-tv">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-bookmark"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="lgtv-youtube">
+    <p>Play a YouTube Video</p>
+    <p><code>msg.payload</code> has to be a YouTube Video id. Example: <code>tZvA9g8VHrk</p>
+</script>
