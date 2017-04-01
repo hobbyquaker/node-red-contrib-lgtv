@@ -26,6 +26,8 @@ Some of the nodes have an output, so you can subscribe to events:
 * Channel changes on LiveTV
 
 
+**Note**: After turning on the TV it takes ~25 seconds until the API is available
+
 ## License
 
 MIT (c) Sebastian Raff
