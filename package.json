@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-lgtv",
   "version": "1.0.0-beta",
-  "description": "Node-RED Nodes to control LG WebOS SmartTVs",
+  "description": "Node-RED Nodes to control LG webOS Smart TVs",
   "main": "none",
   "scripts": {
     "test": "xo --space 4 --no-esnext --plugin=html --extension=html --global $ --global RED"
@@ -27,6 +27,7 @@
       "lgtv-mouse": "nodes/lgtv-mouse.js",
       "lgtv-toast": "nodes/lgtv-toast.js",
       "lgtv-browser": "nodes/lgtv-browser.js",
+      "lgtv-youtube": "nodes/lgtv-youtube.js",
       "lgtv-app": "nodes/lgtv-app.js",
       "lgtv-volume": "nodes/lgtv-volume.js",
       "lgtv-mute": "nodes/lgtv-mute.js",
