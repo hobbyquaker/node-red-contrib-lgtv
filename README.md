@@ -28,7 +28,7 @@ Some of the nodes have an output, so you can subscribe to events:
 
 ## Setup
 
-For the initial configuration of `lgtv-config` you just need the Hostname or IP-Address of you TV and click *Connect*. 
+For the initial configuration of `lgtv-config` you just need the Hostname or IP-Address of your TV and click *Connect*. 
 The token should be filled automatically on first connect.
 
 **Note**: After turning on the TV it takes ~25 seconds until the API is available.
@@ -37,7 +37,7 @@ The token should be filled automatically on first connect.
 ## Support, Contributing
 
 For questions and suggestions open an [Issue](https://github.com/hobbyquaker/node-red-contrib-lgtv/issues/new) or chat 
-me on slack: [@hobbyquaker](https://node-red.slack.com/team/hobbyquaker).
+me on Slack: [@hobbyquaker](https://node-red.slack.com/team/hobbyquaker).
 
 Pull Requests welcome!
 
