@@ -2,6 +2,7 @@
 
 [![NPM version](https://badge.fury.io/js/node-red-contrib-lgtv.svg)](http://badge.fury.io/js/node-red-contrib-lgtv)
 [![Dependency Status](https://img.shields.io/gemnasium/hobbyquaker/node-red-contrib-lgtv.svg?maxAge=2592000)](https://gemnasium.com/github.com/hobbyquaker/node-red-contrib-lgtv)
+[![Build Status](https://travis-ci.org/hobbyquaker/node-red-contrib-lgtv.svg?branch=master)](https://travis-ci.org/hobbyquaker/node-red-contrib-lgtv)
 [![License][mit-badge]][mit-url]
 
 > Node-RED Nodes to Control LG WebOS Smart TVs
