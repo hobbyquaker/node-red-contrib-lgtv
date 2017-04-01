@@ -1,8 +1,9 @@
 module.exports = function (RED) {
-    function LgtvToastNode(n) {
+    function LgtvBrowserNode(n) {
         RED.nodes.createNode(this, n);
         var node = this;
         this.tv = n.tv;
+        this.passthru = n.passthru;
         this.tvConn = RED.nodes.getNode(this.tv);
 
         if (this.tvConn) {
@@ -13,15 +14,15 @@ module.exports = function (RED) {
             });
 
             node.on('input', function (msg) {
-                var payload = {message: msg.payload};
-                if (msg.url) {
-                    payload.onClick = {target: msg.url};
+                if (msg.payload) {
+                    node.tvConn.request('ssap://system.launcher/open', {target: msg.payload});
+                } else {
+                    node.tvConn.request('ssap://system.launcher/close', {id: 'com.webos.app.browser'});
                 }
-                node.tvConn.request('palm://system.notifications/createToast', payload);
             });
         } else {
             this.error('No TV Configuration');
         }
     }
-    RED.nodes.registerType('lgtv-toast', LgtvToastNode);
+    RED.nodes.registerType('lgtv-browser', LgtvBrowserNode);
 };

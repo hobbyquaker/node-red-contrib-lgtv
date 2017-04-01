@@ -1,5 +1,4 @@
 module.exports = function (RED) {
-
     function LgtvMuteNode(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -23,22 +22,24 @@ module.exports = function (RED) {
 
                 node.tvConn.on('tvconnect', function () {
                     node.tvConn.request('ssap://audio/getVolume', function (err, res) {
-                        node.send({payload: res.muted});
+                        if (!err && res) {
+                            node.send({payload: res.muted});
+                        }
                     });
                 });
             }
 
             node.on('input', function (msg) {
-                msg.payload = !!msg.payload;
+                msg.payload = Boolean(msg.payload);
                 node.tvConn.request('ssap://audio/setMute', {mute: msg.payload}, function (err, res) {
-                    if (!err && !res.errorCode && node.passthru) node.send(msg);
+                    if (!err && !res.errorCode && node.passthru) {
+                        node.send(msg);
+                    }
                 });
             });
-
         } else {
             this.error('No TV Configuration');
         }
-
     }
     RED.nodes.registerType('lgtv-mute', LgtvMuteNode);
 };

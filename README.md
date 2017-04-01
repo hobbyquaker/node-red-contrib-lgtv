@@ -22,23 +22,6 @@ But that's not all - some of the nodes have an output, meaning you can also rece
 * Channel changes on LiveTV
 
 
-## Known Issues
-
-* After the first successful connect to your TV you have to open the config node and click update again (otherwise the
-connection token received from the TV will not be saved and you have to awnser the prompt on your TV again after a
-restart of Node-RED)
-
-
-## Todo
-
-* Fix Known Issues
-* More Documentation
-* Icons for the Nodes
-
-
-Pull Requests welcome! :-)
-
-
 ## License
 
 MIT (c) Sebastian Raff

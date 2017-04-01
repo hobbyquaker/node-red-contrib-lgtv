@@ -1,5 +1,4 @@
 module.exports = function (RED) {
-
     function LgtvAppNode(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -16,21 +15,23 @@ module.exports = function (RED) {
 
             if (node._wireCount) {
                 node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', function (err, res) {
-                    if (res.appId) node.send({payload: res.appId});
+                    if (!err && res && res.appId) {
+                        node.send({payload: res.appId});
+                    }
                 });
             }
 
             node.on('input', function (msg) {
-                msg.payload = '' + msg.payload;
+                msg.payload = String(msg.payload);
                 node.tvConn.request('ssap://system.launcher/launch', {id: msg.payload}, function (err, res) {
-                    if (!err && !res.errorCode && node.passthru) node.send(msg);
+                    if (!err && !res.errorCode && node.passthru) {
+                        node.send(msg);
+                    }
                 });
             });
-
         } else {
             this.error('No TV Configuration');
         }
-
     }
     RED.nodes.registerType('lgtv-app', LgtvAppNode);
 };

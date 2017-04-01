@@ -1,21 +1,27 @@
 module.exports = function (RED) {
+    var status;
+    var token;
+    var lgtv;
 
     function LgtvConfigNode(config) {
-
         RED.nodes.createNode(this, config);
         var node = this;
 
-        node.host =         config.host;
+        node.host = config.host;
         node.users = {};
+        var subscriptions = {};
 
-        var lgtv = require("lgtv2")({
+        var lgtv = require('lgtv2')({
             url: 'ws://' + node.host + ':3000',
             clientKey: node.credentials.token,
             saveKey: function (key, cb) {
+                token = key;
                 RED.nodes.addCredentials(node.id, {
                     token: key
                 });
-                if (typeof cb === 'function') cb();
+                if (typeof cb === 'function') {
+                    cb();
+                }
             }
         });
 
@@ -27,11 +33,11 @@ module.exports = function (RED) {
             node.setStatus('connect');
             node.connected = true;
 
-            for (var url in subscriptions) {
+            Object.keys(subscriptions).forEach(function (url) {
                 lgtv.subscribe(url, function (err, res) {
                     node.subscriptionHandler(url, err, res);
                 });
-            }
+            });
 
             lgtv.getSocket('ssap://com.webos.service.networkinput/getPointerInputSocket',
                 function (err, sock) {
@@ -42,13 +48,11 @@ module.exports = function (RED) {
             );
 
             node.emit('tvconnect');
-
         });
 
         lgtv.on('error', function (e) {
             node.connected = false;
-            node.setStatus(e.code)
-
+            node.setStatus(e.code);
         });
 
         lgtv.on('close', function () {
@@ -62,13 +66,11 @@ module.exports = function (RED) {
             node.setStatus('prompt');
         });
 
-        var subscriptions = {};
-
         this.subscriptionHandler = function (url, err, res) {
             if (subscriptions[url]) {
-                for (var id in subscriptions[url]) {
+                Object.keys(subscriptions[url]).forEach(function (id) {
                     subscriptions[url][id](err, res);
-                }
+                });
             }
         };
 
@@ -92,76 +94,107 @@ module.exports = function (RED) {
 
         this.register = function (lgtvNode) {
             node.users[lgtvNode.id] = lgtvNode;
-            if (Object.keys(node.users).length === 1) {
-
-            }
         };
 
         this.deregister = function (lgtvNode, done) {
             delete node.users[lgtvNode.id];
-            for (var url in subscriptions) {
+            Object.keys(subscriptions).forEach(function (url) {
                 delete subscriptions[url][lgtvNode.id];
-            }
-            if (node.closing) {
-                return done();
-            }
-            if (Object.keys(node.users).length === 0) {
-                if (node.client && node.client.connected) {
-                    //return node.client.end(done);
-                } else {
-                    //node.client.end();
-                    //return done();
-                }
-            }
-            done();
+            });
+            return done();
         };
 
         this.setStatus = function (c) {
-            var status;
+            status = c;
+            var s;
             switch (c) {
                 case 'connecting':
-                    status = {
+                    s = {
                         fill: 'yellow',
                         shape: 'ring',
                         text: 'node-red:common.status.connecting'
                     };
                     break;
                 case 'prompt':
-                    status = {
+                    s = {
                         fill: 'yellow',
                         shape: 'ring',
                         text: c
                     };
                     break;
                 case 'connect':
-                    status = {
+                    s = {
                         fill: 'green',
                         shape: 'dot',
                         text: 'node-red:common.status.connected'
                     };
                     break;
                 case 'disconnected':
-                    status = {
+                    s = {
                         fill: 'red',
                         shape: 'ring',
                         text: 'node-red:common.status.disconnected'
                     };
                     break;
                 default:
-                    status = {
+                    s = {
                         fill: 'red',
                         shape: 'ring',
                         text: c
                     };
             }
 
-            for (var id in node.users) {
-                if (node.users.hasOwnProperty(id)) {
-                    node.users[id].status(status);
-                }
-            }
-        }
+            Object.keys(node.users).forEach(function (id) {
+                node.users[id].status(s);
+            });
+        };
     }
+
+    RED.httpAdmin.get('/lgtv-connect', function (req, res) {
+        if (!status || status === 'Close') {
+            lgtv = require('lgtv2')({
+                url: 'ws://' + req.query.host + ':3000',
+                saveKey: function (key, cb) {
+                    token = key;
+                    RED.nodes.addCredentials(req.query.id, {
+                        token: key
+                    });
+                    if (typeof cb === 'function') {
+                        cb();
+                    }
+                }
+            });
+
+            status = 'Connecting';
+
+            setTimeout(function () {
+                lgtv.disconnect();
+                status = '';
+            }, 31000);
+
+            lgtv.on('connecting', function () {
+                status = 'Connecting';
+            });
+
+            lgtv.on('connect', function () {
+                lgtv.disconnect();
+                status = 'Connected';
+            });
+
+            lgtv.on('error', function (e) {
+                status = 'Error: ' + e.code.toLowerCase();
+            });
+
+            lgtv.on('prompt', function () {
+                status = 'Please answer the prompt on your TV';
+            });
+        }
+
+        res.status(200).send(JSON.stringify({
+            state: status,
+            token: token
+        }));
+    });
 
     RED.nodes.registerType('lgtv-config', LgtvConfigNode, {
         credentials: {

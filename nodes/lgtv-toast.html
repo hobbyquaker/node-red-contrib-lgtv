@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('lgtv-toast', {
-        category: 'LGTV',
-        color: '#5577ff',
+        category: 'lgtv',
+        color: '#C0DEED',
         inputs: 1,
         defaults: {
             tv: {
@@ -13,10 +13,12 @@
                 value: ''
             }
         },
-        label: function() {
-            return this.name || 'Toast';
+        label: function () {
+            return this.name || 'toast';
         },
-        paletteLabel: 'Toast'
+        icon: 'lgtv-toast.png',
+        paletteLabel: 'toast',
+        align: 'right'
     });
 </script>
 

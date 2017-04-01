@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('lgtv-volume', {
-        category: 'LGTV',
-        color: '#5577ff',
+        category: 'lgtv',
+        color: '#C0DEED',
         inputs: 1,
         outputs: 1,
         defaults: {
@@ -17,10 +17,11 @@
                 value: true
             }
         },
-        label: function() {
-            return this.name || 'Volume';
+        label: function () {
+            return this.name || 'volume';
         },
-        paletteLabel: 'Volume'
+        icon: 'lgtv-volume.png',
+        paletteLabel: 'volume'
     });
 </script>
 
@@ -37,4 +38,9 @@
         <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> Pass <code>msg</code> through to output after successfully sending to TV: </label>
         <input type="checkbox" checked id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:baseline;">
     </div>
+</script>
+
+<script type="text/x-red" data-help-name="lgtv-volume">
+    <p>Sound Volume</p>
+    <p><code>msg.payload</code> is a number between 0 and 100</p>
 </script>

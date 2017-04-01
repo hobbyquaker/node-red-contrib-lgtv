@@ -12,11 +12,39 @@
                 type: 'text'
             }
         },
-        label: function() {
+        label: function () {
             return this.host;
         },
         oneditprepare: function () {
-      
+            var nodeId = this.id;
+            var timeout;
+            $('#node-config-dialog-ok').button('option', 'disabled', true);
+            $('#lgtv-connect').button().click(function () {
+                $('#lgtv-connect').button('option', 'disabled', true);
+                $('#lgtv-spinner').removeClass('hide');
+                timeout = false;
+                setTimeout(function () {
+                    timeout = true;
+                }, 30000);
+                pollConnection();
+            });
+
+            function pollConnection() {
+                $.getJSON('lgtv-connect/?id=' + nodeId + '&host=' + $('#node-config-input-host').val(), function (data) {
+                    $('#lgtv-state').html(data.state);
+                    if (data.token) {
+                        $('#node-config-dialog-ok').button('option', 'disabled', false);
+                        $('#lgtv-spinner').addClass('hide');
+                        $('#node-config-input-token').val(data.token);
+                    } else if (timeout) {
+                        $('#lgtv-state').html('');
+                        $('#lgtv-spinner').addClass('hide');
+                        $('#lgtv-connect').button('option', 'disabled', false);
+                    } else {
+                        setTimeout(pollConnection, 1000);
+                    }
+                });
+            }
         }
 
     });
@@ -29,6 +57,15 @@
     </div>
     <div class="form-row">
         <label for="node-config-input-token"><i class="icon-bookmark"></i> Token</label>
-        <input type="text" id="node-config-input-token">
+        <input type="text" id="node-config-input-token" disabled>
+    </div>
+    <div class="form-row">
+        <label for="lgtv-state"><i class="icon-bookmark"></i> Connection</label>
+        <span id="lgtv-state"></span>
+    </div>
+
+    <div class="form-row">
+        <label for="lgtv-connect"><span id="lgtv-spinner" class="hide"><img src="red/images/spin.svg"></span></label>
+        <button id="lgtv-connect">Connect</button>
     </div>
 </script>

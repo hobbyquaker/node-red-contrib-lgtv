@@ -1,5 +1,4 @@
 module.exports = function (RED) {
-
     function LgtvButtonNode(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -15,14 +14,12 @@ module.exports = function (RED) {
 
             node.on('input', function (msg) {
                 if (msg.payload && node.tvConn.buttonSocket) {
-                    node.tvConn.buttonSocket.send('button', {name: ('' + msg.payload).toUpperCase()});
+                    node.tvConn.buttonSocket.send('button', {name: (String(msg.payload)).toUpperCase()});
                 }
             });
-
         } else {
             this.error('No TV Configuration');
         }
-
     }
     RED.nodes.registerType('lgtv-button', LgtvButtonNode);
 };

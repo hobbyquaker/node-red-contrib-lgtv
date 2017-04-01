@@ -1,5 +1,4 @@
 module.exports = function (RED) {
-
     function LgtvControlNode(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -43,8 +42,17 @@ module.exports = function (RED) {
                     case 'turnOff':
                         url = 'ssap://system/' + msg.payload;
                         break;
+
+                    case 'sendEnterKey':
+                    case 'deleteCharacters':
+                        url = 'ssap://com.webos.service.ime/' + msg.payload;
+                        break;
+
+                    default:
                 }
-                if (url) node.tvConn.request(url);
+                if (url) {
+                    node.tvConn.request(url);
+                }
             });
 
             node.tvConn.on('tvconnect', function () {
@@ -54,11 +62,9 @@ module.exports = function (RED) {
             node.tvConn.on('tvclose', function () {
                 node.send({payload: false});
             });
-
         } else {
             this.error('No TV Configuration');
         }
-
     }
     RED.nodes.registerType('lgtv-control', LgtvControlNode);
 };

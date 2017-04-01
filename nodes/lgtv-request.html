@@ -1,8 +1,9 @@
 <script type="text/javascript">
-    RED.nodes.registerType('lgtv-mouse', {
+    RED.nodes.registerType('lgtv-request', {
         category: 'lgtv',
         color: '#C0DEED',
         inputs: 1,
+        outputs: 1,
         defaults: {
             tv: {
                 value: '',
@@ -14,15 +15,14 @@
             }
         },
         label: function () {
-            return this.name || 'mouse';
+            return this.name || 'request';
         },
-        icon: 'lgtv-mouse.png',
-        paletteLabel: 'mouse',
-        align: 'right'
+        icon: 'bridge-dash.png',
+        paletteLabel: 'request'
     });
 </script>
 
-<script type="text/x-red" data-template-name="lgtv-mouse">
+<script type="text/x-red" data-template-name="lgtv-request">
     <div class="form-row">
         <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
         <input type="text" id="node-input-tv">
@@ -33,13 +33,9 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="lgtv-mouse">
-    <p>Mouse Controls</p>
-    <table>
-        <tr><th>msg.topic</th><th>msg.payload</th><th></th></tr>
-        <tr><td>click</td><td></td><td></td></tr>
-        <tr><td>move</td><td>{dx: &lt;number&gt;, dy: &lt;number&gt;}</td><td></td></tr>
-        <tr><td>drag</td><td>{dx: &lt;number&gt;, dy: &lt;number&gt;}</td><td></td></tr>
-        <tr><td>scroll</td><td>{dx: &lt;number&gt;, dy: &lt;number&gt;}</td><td></td></tr>
-    </table>
+<script type="text/x-red" data-help-name="lgtv-request">
+    <p>Send arbitrary requests to the API</p>
+    <p><code>msg.topic</code> is the API URL. Example: <code>ssap://com.webos.applicationManager/listLaunchPoints</code></p>
+    <p>Send an empty object (<code>{}</code>) as <code>msg.payload</code> if you want to omit the payload.</p>
+    <p>See <a href="http://webostv.developer.lge.com/api" target="_blank">http://webostv.developer.lge.com/api</a></p>
 </script>

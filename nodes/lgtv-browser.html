@@ -1,8 +1,7 @@
 <script type="text/javascript">
-    RED.nodes.registerType('lgtv-mute', {
+    RED.nodes.registerType('lgtv-browser', {
         category: 'lgtv',
         color: '#C0DEED',
-        outputs: 1,
         inputs: 1,
         defaults: {
             tv: {
@@ -18,14 +17,15 @@
             }
         },
         label: function () {
-            return this.name || 'mute';
+            return this.name || 'browser';
         },
-        icon: 'lgtv-mute.png',
-        paletteLabel: 'mute'
+        icon: 'white-globe.png',
+        paletteLabel: 'browser',
+        align: 'right'
     });
 </script>
 
-<script type="text/x-red" data-template-name="lgtv-mute">
+<script type="text/x-red" data-template-name="lgtv-browser">
     <div class="form-row">
         <label for="node-input-tv"><i class="icon-bookmark"></i> TV</label>
         <input type="text" id="node-input-tv">
@@ -34,14 +34,10 @@
         <label for="node-input-name"><i class="icon-bookmark"></i> Name</label>
         <input type="text" id="node-input-name">
     </div>
-    </div>
-        <div class="form-row">
-        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> Pass <code>msg</code> through to output after successfully sending to TV: </label>
-        <input type="checkbox" checked id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:baseline;">
-    </div>
 </script>
 
-<script type="text/x-red" data-help-name="lgtv-mute">
-    <p>Sound Mute</p>
-    <p><code>msg.payload</code> is boolean <code>true</code> or <code>false</code></p>
+<script type="text/x-red" data-help-name="lgtv-browser">
+    <p>Open a URL in the Web Browser</p>
+    <p><code>msg.payload</code> Example: <code>https://www.google.com</code></p>
+    <p>To close the Browser send an empty string as <code>msg.payload</code>
 </script>

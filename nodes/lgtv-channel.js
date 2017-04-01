@@ -1,5 +1,4 @@
 module.exports = function (RED) {
-
     function LgtvChannelNode(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -18,11 +17,13 @@ module.exports = function (RED) {
 
             if (node._wireCount) {
                 node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', function (err, res) {
-                    if (res && res.appId === 'com.webos.app.livetv') {
+                    if (!err && res && res.appId === 'com.webos.app.livetv') {
                         setTimeout(function () {
                             node.tvConn.subscribe(node.id, 'ssap://tv/getCurrentChannel', function (err, res) {
-                                res.payload = res[node.payloadType];
-                                node.send(res);
+                                if (!err && res) {
+                                    res.payload = res[node.payloadType];
+                                    node.send(res);
+                                }
                             });
                         }, 1000);
                     }
@@ -32,8 +33,10 @@ module.exports = function (RED) {
                     node.tvConn.request('ssap://com.webos.applicationManager/getForegroundAppInfo', function (err, res) {
                         if (!err && res && res.appId === 'com.webos.app.livetv') {
                             node.tvConn.request('ssap://tv/getCurrentChannel', function (err, res) {
-                                res.payload = res[node.payloadType];
-                                node.send(res);
+                                if (!err && res) {
+                                    res.payload = res[node.payloadType];
+                                    node.send(res);
+                                }
                             });
                         }
                     });
@@ -42,14 +45,14 @@ module.exports = function (RED) {
 
             node.on('input', function (msg) {
                 node.tvConn.request('ssap://tv/openChannel', {channelId: msg.payload}, function (err, res) {
-                    if (!err && !res.errorCode && node.passthru) node.send(msg);
+                    if (!err && !res.errorCode && node.passthru) {
+                        node.send(msg);
+                    }
                 });
             });
-
         } else {
             this.error('No TV Configuration');
         }
-
     }
     RED.nodes.registerType('lgtv-channel', LgtvChannelNode);
 };

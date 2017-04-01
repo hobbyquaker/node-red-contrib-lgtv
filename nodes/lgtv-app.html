@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('lgtv-app', {
-        category: 'LGTV',
-        color: '#5577ff',
+        category: 'lgtv',
+        color: '#C0DEED',
         outputs: 1,
         inputs: 1,
         defaults: {
@@ -17,10 +17,11 @@
                 value: true
             }
         },
-        label: function() {
-            return this.name || 'App';
+        label: function () {
+            return this.name || 'app';
         },
-        paletteLabel: 'App'
+        icon: 'lgtv-app.png',
+        paletteLabel: 'app'
     });
 </script>
 

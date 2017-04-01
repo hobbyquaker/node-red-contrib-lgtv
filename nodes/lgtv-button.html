@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('lgtv-button', {
-        category: 'LGTV',
-        color: '#5577ff',
+        category: 'lgtv',
+        color: '#C0DEED',
         inputs: 1,
         defaults: {
             tv: {
@@ -13,10 +13,12 @@
                 value: ''
             }
         },
-        label: function() {
-            return this.name || 'Button';
+        label: function () {
+            return this.name || 'button';
         },
-        paletteLabel: 'Button'
+        icon: 'lgtv-button.png',
+        paletteLabel: 'button',
+        align: 'right'
     });
 </script>
 
@@ -35,7 +37,28 @@
     <p>Press a Button</p>
     <p>
         <code>msg.payload</code> can be one of:<br>
-        MUTE, RED, GREEN, YELLOW, BLUE, HOME, MENU, VOLUMEUP, VOLUMEDOWN, CHANNELUP, CHANNELDOWN, *, CC, BACK, UP, DOWN,
-        LEFT, ENTER, DASH, 0-9, EXIT
+        <ul>
+            <li>MUTE</li>
+            <li>RED</li>
+            <li>GREEN</li>
+            <li>YELLOW</li>
+            <li>BLUE</li>
+            <li>HOME</li>
+            <li>MENU</li>
+            <li>VOLUMEUP</li>
+            <li>VOLUMEDOWN</li>
+            <li>CHANNELUP</li>
+            <li>CHANNELDOWN</li>
+            <li>*</li>
+            <li>CC</li>
+            <li>BACK</li>
+            <li>UP</li>
+            <li>DOWN</li>
+            <li>LEFT</li>
+            <li>ENTER</li>
+            <li>DASH</li>
+            <li>0-9</li>
+            <li>EXIT</li>
+        </ul>
     </p>
 </script>

@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('lgtv-control', {
-        category: 'LGTV',
-        color: '#5577ff',
+        category: 'lgtv',
+        color: '#C0DEED',
         inputs: 1,
         outputs: 1,
         defaults: {
@@ -14,10 +14,11 @@
                 value: ''
             }
         },
-        label: function() {
-            return this.name || 'Control';
+        label: function () {
+            return this.name || 'control';
         },
-        paletteLabel: 'Control'
+        icon: 'lgtv-control.png',
+        paletteLabel: 'control'
     });
 </script>
 
@@ -33,7 +34,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="lgtv-control">
-    <p><b>Input:</b> Various Controls</p>
+    <p><b>Input:</b> Various Commands</p>
     <p><code>msg.payload</code> can be one of:
         <ul>
             <li>turnOff</li>
@@ -48,6 +49,8 @@
             <li>channelDown</li>
             <li>set3DOn</li>
             <li>set3DOff</li>
+            <li>sendEnterKey</li>
+            <li>deleteCharacters</li>
         </ul>
     </p>
     <p><b>Output:</b> Connection State</p>

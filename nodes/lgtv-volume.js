@@ -1,5 +1,4 @@
 module.exports = function (RED) {
-
     function LgtvVolumeNode(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -24,7 +23,9 @@ module.exports = function (RED) {
 
                 node.tvConn.on('tvconnect', function () {
                     node.tvConn.request('ssap://audio/getVolume', function (err, res) {
-                        node.send({payload: res.volume});
+                        if (err && res) {
+                            node.send({payload: res.volume});
+                        }
                     });
                 });
             }
@@ -37,14 +38,14 @@ module.exports = function (RED) {
                     msg.payload = 0;
                 }
                 node.tvConn.request('ssap://audio/setVolume', {volume: msg.payload}, function (err, res) {
-                    if (!err && !res.errorCode && node.passthru) node.send(msg);
+                    if (!err && !res.errorCode && node.passthru) {
+                        node.send(msg);
+                    }
                 });
             });
-
         } else {
             this.error('No TV Configuration');
         }
-
     }
     RED.nodes.registerType('lgtv-volume', LgtvVolumeNode);
 };

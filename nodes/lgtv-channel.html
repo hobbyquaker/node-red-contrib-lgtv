@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('lgtv-channel', {
-        category: 'LGTV',
-        color: '#5577ff',
+        category: 'lgtv',
+        color: '#C0DEED',
         inputs: 1,
         outputs: 1,
         defaults: {
@@ -20,10 +20,11 @@
                 value: true
             }
         },
-        label: function() {
-            return this.name || 'Channel';
+        label: function () {
+            return this.name || 'channel';
         },
-        paletteLabel: 'Channel'
+        icon: 'lgtv-channel.png',
+        paletteLabel: 'channel'
     });
 </script>
 
@@ -52,6 +53,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="lgtv-channel">
-    <p>Outputs the LiveTV Channel.</p>
+    <p>LiveTV Channel</p>
     <p>You need to send the <code>channelId</code> string as <code>msg.payload</code></p>
+    <p>Use the Output to lookup channelIds</p>
 </script>
