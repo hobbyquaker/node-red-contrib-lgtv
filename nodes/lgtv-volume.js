@@ -23,7 +23,7 @@ module.exports = function (RED) {
 
                 node.tvConn.on('tvconnect', function () {
                     node.tvConn.request('ssap://audio/getVolume', function (err, res) {
-                        if (err && res) {
+                        if (!err && res) {
                             node.send({payload: res.volume});
                         }
                     });
