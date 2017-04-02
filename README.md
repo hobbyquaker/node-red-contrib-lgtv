@@ -37,6 +37,12 @@ click *Connect* in the `lgtv-config` node. The token should be filled automatica
 **Note**: After turning on the TV it takes ~25 seconds until the API is available.
 
 
+## Usage Example
+
+I made a flow using node-red-dashboard to create a simple Remote Control: 
+http://flows.nodered.org/flow/f497989bef43fb9310837adbff69ce73
+
+
 ## Support, Contributing
 
 For questions and suggestions open an [Issue](https://github.com/hobbyquaker/node-red-contrib-lgtv/issues/new) or chat 
