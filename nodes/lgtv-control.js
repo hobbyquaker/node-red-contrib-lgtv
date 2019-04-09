@@ -40,6 +40,7 @@ module.exports = function (RED) {
                         break;
 
                     case 'turnOff':
+                    case 'turnOn':
                         url = 'ssap://system/' + msg.payload;
                         break;
 
