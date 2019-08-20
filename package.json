@@ -4,7 +4,8 @@
   "description": "Node-RED Nodes to control LG webOS Smart TVs",
   "main": "none",
   "scripts": {
-    "test": "xo --space 4 --no-esnext --plugin=html --extension=html --global $ --global RED"
+    "test": "xo",
+    "lintfix": "xo --fix"
   },
   "keywords": [
     "node-red",
@@ -41,5 +42,17 @@
   "devDependencies": {
     "eslint-plugin-html": "^6.0.0",
     "xo": "^0.24.0"
+  },
+  "xo": {
+    "space": 4,
+    "plugin": "html",
+    "extensions": [
+      "js",
+      "html"
+    ],
+    "global": [
+      "$",
+      "RED"
+    ]
   }
 }
