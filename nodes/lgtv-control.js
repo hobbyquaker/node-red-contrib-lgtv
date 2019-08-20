@@ -1,19 +1,19 @@
 module.exports = function (RED) {
     function LgtvControlNode(n) {
         RED.nodes.createNode(this, n);
-        var node = this;
+        const node = this;
         this.tv = n.tv;
         this.tvConn = RED.nodes.getNode(this.tv);
 
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', function (done) {
+            this.on('close', done => {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', function (msg) {
-                var url;
+            node.on('input', msg => {
+                let url;
 
                 switch (msg.payload) {
                     case 'play':
@@ -51,21 +51,23 @@ module.exports = function (RED) {
 
                     default:
                 }
+
                 if (url) {
                     node.tvConn.request(url);
                 }
             });
 
-            node.tvConn.on('tvconnect', function () {
+            node.tvConn.on('tvconnect', () => {
                 node.send({payload: true});
             });
 
-            node.tvConn.on('tvclose', function () {
+            node.tvConn.on('tvclose', () => {
                 node.send({payload: false});
             });
         } else {
             this.error('No TV Configuration');
         }
     }
+
     RED.nodes.registerType('lgtv-control', LgtvControlNode);
 };

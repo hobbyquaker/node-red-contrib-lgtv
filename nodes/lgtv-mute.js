@@ -1,7 +1,7 @@
 module.exports = function (RED) {
     function LgtvMuteNode(n) {
         RED.nodes.createNode(this, n);
-        var node = this;
+        const node = this;
         this.tv = n.tv;
         this.tvConn = RED.nodes.getNode(this.tv);
         this.passthru = n.passthru;
@@ -9,19 +9,19 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', function (done) {
+            this.on('close', done => {
                 node.tvConn.deregister(node, done);
             });
 
             if (node._wireCount) {
-                node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', function (err, res) {
+                node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', (err, res) => {
                     if (!err && res && res && res.changed.indexOf('muted') !== -1) {
                         node.send({payload: res.muted});
                     }
                 });
 
-                node.tvConn.on('tvconnect', function () {
-                    node.tvConn.request('ssap://audio/getVolume', function (err, res) {
+                node.tvConn.on('tvconnect', () => {
+                    node.tvConn.request('ssap://audio/getVolume', (err, res) => {
                         if (!err && res) {
                             node.send({payload: res.muted});
                         }
@@ -29,9 +29,9 @@ module.exports = function (RED) {
                 });
             }
 
-            node.on('input', function (msg) {
+            node.on('input', msg => {
                 msg.payload = Boolean(msg.payload);
-                node.tvConn.request('ssap://audio/setMute', {mute: msg.payload}, function (err, res) {
+                node.tvConn.request('ssap://audio/setMute', {mute: msg.payload}, (err, res) => {
                     if (!err && !res.errorCode && node.passthru) {
                         node.send(msg);
                     }
@@ -41,5 +41,6 @@ module.exports = function (RED) {
             this.error('No TV Configuration');
         }
     }
+
     RED.nodes.registerType('lgtv-mute', LgtvMuteNode);
 };

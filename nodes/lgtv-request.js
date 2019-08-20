@@ -1,7 +1,7 @@
 module.exports = function (RED) {
     function LgtvRequestNode(n) {
         RED.nodes.createNode(this, n);
-        var node = this;
+        const node = this;
         this.tv = n.tv;
 
         this.tvConn = RED.nodes.getNode(this.tv);
@@ -9,12 +9,12 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', function (done) {
+            this.on('close', done => {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', function (msg) {
-                node.tvConn.request(msg.topic, msg.payload, function (err, res) {
+            node.on('input', msg => {
+                node.tvConn.request(msg.topic, msg.payload, (err, res) => {
                     if (!err) {
                         node.send({payload: res});
                     }
@@ -24,5 +24,6 @@ module.exports = function (RED) {
             this.error('No TV Configuration');
         }
     }
+
     RED.nodes.registerType('lgtv-request', LgtvRequestNode);
 };

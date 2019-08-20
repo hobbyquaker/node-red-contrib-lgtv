@@ -12,25 +12,25 @@
                 type: 'text'
             }
         },
-        label: function () {
+        label() {
             return this.host;
         },
-        oneditprepare: function () {
-            var nodeId = this.id;
-            var timeout;
+        oneditprepare() {
+            const nodeId = this.id;
+            let timeout;
             $('#node-config-dialog-ok').button('option', 'disabled', true);
-            $('#lgtv-connect').button().click(function () {
+            $('#lgtv-connect').button().click(() => {
                 $('#lgtv-connect').button('option', 'disabled', true);
                 $('#lgtv-spinner').removeClass('hide');
                 timeout = false;
-                setTimeout(function () {
+                setTimeout(() => {
                     timeout = true;
                 }, 30000);
                 pollConnection();
             });
 
             function pollConnection() {
-                $.getJSON('lgtv-connect/?id=' + nodeId + '&host=' + $('#node-config-input-host').val(), function (data) {
+                $.getJSON('lgtv-connect/?id=' + nodeId + '&host=' + $('#node-config-input-host').val(), data => {
                     $('#lgtv-state').html(data.state);
                     if (data.token) {
                         $('#node-config-dialog-ok').button('option', 'disabled', false);
@@ -46,7 +46,6 @@
                 });
             }
         }
-
     });
 </script>
 

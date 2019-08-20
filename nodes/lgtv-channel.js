@@ -1,7 +1,7 @@
 module.exports = function (RED) {
     function LgtvChannelNode(n) {
         RED.nodes.createNode(this, n);
-        var node = this;
+        const node = this;
         this.tv = n.tv;
         this.payloadType = n.payloadType;
         this.passthru = n.passthru;
@@ -11,15 +11,15 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', function (done) {
+            this.on('close', done => {
                 node.tvConn.deregister(node, done);
             });
 
             if (node._wireCount) {
-                node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', function (err, res) {
+                node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', (err, res) => {
                     if (!err && res && res.appId === 'com.webos.app.livetv') {
-                        setTimeout(function () {
-                            node.tvConn.subscribe(node.id, 'ssap://tv/getCurrentChannel', function (err, res) {
+                        setTimeout(() => {
+                            node.tvConn.subscribe(node.id, 'ssap://tv/getCurrentChannel', (err, res) => {
                                 if (!err && res) {
                                     res.payload = res[node.payloadType];
                                     node.send(res);
@@ -29,10 +29,10 @@ module.exports = function (RED) {
                     }
                 });
 
-                node.tvConn.on('tvconnect', function () {
-                    node.tvConn.request('ssap://com.webos.applicationManager/getForegroundAppInfo', function (err, res) {
+                node.tvConn.on('tvconnect', () => {
+                    node.tvConn.request('ssap://com.webos.applicationManager/getForegroundAppInfo', (err, res) => {
                         if (!err && res && res.appId === 'com.webos.app.livetv') {
-                            node.tvConn.request('ssap://tv/getCurrentChannel', function (err, res) {
+                            node.tvConn.request('ssap://tv/getCurrentChannel', (err, res) => {
                                 if (!err && res) {
                                     res.payload = res[node.payloadType];
                                     node.send(res);
@@ -43,8 +43,8 @@ module.exports = function (RED) {
                 });
             }
 
-            node.on('input', function (msg) {
-                node.tvConn.request('ssap://tv/openChannel', {channelId: msg.payload}, function (err, res) {
+            node.on('input', msg => {
+                node.tvConn.request('ssap://tv/openChannel', {channelId: msg.payload}, (err, res) => {
                     if (!err && !res.errorCode && node.passthru) {
                         node.send(msg);
                     }
@@ -54,5 +54,6 @@ module.exports = function (RED) {
             this.error('No TV Configuration');
         }
     }
+
     RED.nodes.registerType('lgtv-channel', LgtvChannelNode);
 };
