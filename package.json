@@ -17,7 +17,7 @@
   "repository": "https://github.com/hobbyquaker/node-red-contrib-lgtv",
   "author": "Sebastian Raff",
   "contributors": [
-      "itsj4y <itsj4y@yahoo.com> https://github.com/itsj4y"
+    "itsj4y <itsj4y@yahoo.com> https://github.com/itsj4y"
   ],
   "license": "MIT",
   "dependencies": {

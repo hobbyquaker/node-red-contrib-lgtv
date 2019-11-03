@@ -15,9 +15,10 @@ module.exports = function (RED) {
 
             node.on('input', msg => {
                 if (msg.payload) {
-                    node.tvConn.request('ssap://system.launcher/open', {target: msg.payload});
+                    node.tvConn.request('ssap://system.launcher/open', { target: msg.payload });
+                    node.tvConn.fullscreen();
                 } else {
-                    node.tvConn.request('ssap://system.launcher/close', {id: 'com.webos.app.browser'});
+                    node.tvConn.request('ssap://system.launcher/close', { id: 'com.webos.app.browser' });
                 }
             });
         } else {
