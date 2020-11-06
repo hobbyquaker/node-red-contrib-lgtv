@@ -17,11 +17,11 @@
   "repository": "https://github.com/hobbyquaker/node-red-contrib-lgtv",
   "author": "Sebastian Raff",
   "contributors": [
-      "itsj4y <itsj4y@yahoo.com> https://github.com/itsj4y"
+    "itsj4y <itsj4y@yahoo.com> https://github.com/itsj4y"
   ],
   "license": "MIT",
   "dependencies": {
-    "lgtv2": "^1.4.1"
+    "lgtv2": "^1.6.3"
   },
   "node-red": {
     "nodes": {
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "eslint-plugin-html": "^6.0.0",
-    "xo": "^0.24.0"
+    "xo": "^0.34.2"
   },
   "xo": {
     "space": 4,
