@@ -18,7 +18,8 @@
   "author": "William Molina",
   "contributors": [
     "williammolina <wmolina98@gmail.com> https://github.com/WilliamMolina",
-    "itsj4y <itsj4y@yahoo.com> https://github.com/itsj4y"
+    "itsj4y <itsj4y@yahoo.com> https://github.com/itsj4y",
+    "Lukas Fruntke <lukas@fruntke.tech> https://github.com/LukvonStrom"
   ],
   "license": "MIT",
   "dependencies": {
