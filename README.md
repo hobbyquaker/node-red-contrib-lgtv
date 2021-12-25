@@ -1,7 +1,7 @@
-# node-red-contrib-lgtv (with fullscreen)
+# node-red-contrib-lgtv-updated
 
 This repository is a fork from [node-red-contrib-lgtv](https://github.com/hobbyquaker/node-red-contrib-lgtv).     
-The fullscreen function has been implemented based on [Ciberado's](https://github.com/ciberado) [comment](https://github.com/hobbyquaker/lgtv2/issues/23#issuecomment-450331073)   
+It merges the existing forks to provide fullscreen, dependency updates, etc.
 > Node-RED Nodes to Control LG webOS Smart TVs :tv:
 
 With these Nodes you can:
