@@ -1,7 +1,7 @@
 {
-  "name": "node-red-contrib-lgtv",
+  "name": "node-red-contrib-lgtv-with-fullscreen",
   "version": "1.1.0",
-  "description": "Node-RED Nodes to control LG webOS Smart TVs",
+  "description": "Node-RED Nodes to control LG webOS Smart TVs, with browser fullscreen",
   "main": "none",
   "scripts": {
     "test": "xo",
@@ -14,10 +14,10 @@
     "Smart",
     "TV"
   ],
-  "repository": "https://github.com/hobbyquaker/node-red-contrib-lgtv",
-  "author": "Sebastian Raff",
+  "repository": "https://github.com/WilliamMolina/node-red-contrib-lgtv",
+  "author": "William Molina",
   "contributors": [
-      "itsj4y <itsj4y@yahoo.com> https://github.com/itsj4y"
+    "williammolina <wmolina98@gmail.com> https://github.com/WilliamMolina"
   ],
   "license": "MIT",
   "dependencies": {

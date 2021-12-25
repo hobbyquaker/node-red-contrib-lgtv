@@ -93,6 +93,18 @@ module.exports = function (RED) {
             }
         };
 
+        this.fullscreen = function () {
+            if (node.buttonSocket) {
+                const command = "move\n" + "dx:" + 11 + "\n" + "dy:-8\n" + "down:0\n" + "\n";
+                for (let i = 0; i < 22; i++) {
+                    node.buttonSocket.send(command);
+                }
+                setTimeout(() => {
+                    node.buttonSocket.send('click');
+                }, 5000);
+            }
+        }
+
         this.register = function (lgtvNode) {
             node.users[lgtvNode.id] = lgtvNode;
         };
@@ -199,7 +211,7 @@ module.exports = function (RED) {
 
     RED.nodes.registerType('lgtv-config', LgtvConfigNode, {
         credentials: {
-            token: {type: 'text'}
+            token: { type: 'text' }
         }
     });
 };
