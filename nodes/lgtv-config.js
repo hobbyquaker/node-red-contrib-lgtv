@@ -34,8 +34,8 @@ module.exports = function (RED) {
             node.connected = true;
 
             Object.keys(subscriptions).forEach(url => {
-                lgtv.subscribe(url, (err, res) => {
-                    node.subscriptionHandler(url, err, res);
+                lgtv.subscribe(url, (err, response) => {
+                    node.subscriptionHandler(url, err, response);
                 });
             });
 
@@ -50,9 +50,9 @@ module.exports = function (RED) {
             node.emit('tvconnect');
         });
 
-        lgtv.on('error', e => {
+        lgtv.on('error', error => {
             node.connected = false;
-            node.setStatus(e.code);
+            node.setStatus(error.code);
         });
 
         lgtv.on('close', () => {
@@ -66,10 +66,10 @@ module.exports = function (RED) {
             node.setStatus('prompt');
         });
 
-        this.subscriptionHandler = function (url, err, res) {
+        this.subscriptionHandler = function (url, err, response) {
             if (subscriptions[url]) {
                 Object.keys(subscriptions[url]).forEach(id => {
-                    subscriptions[url][id](err, res);
+                    subscriptions[url][id](err, response);
                 });
             }
         };
@@ -78,8 +78,8 @@ module.exports = function (RED) {
             if (!subscriptions[url]) {
                 subscriptions[url] = {};
                 if (node.connected) {
-                    lgtv.subscribe(url, (err, res) => {
-                        node.subscriptionHandler(url, err, res);
+                    lgtv.subscribe(url, (err, response) => {
+                        node.subscriptionHandler(url, err, response);
                     });
                 }
             }
@@ -95,15 +95,16 @@ module.exports = function (RED) {
 
         this.fullscreen = function () {
             if (node.buttonSocket) {
-                const command = "move\n" + "dx:" + 11 + "\n" + "dy:-8\n" + "down:0\n" + "\n";
+                const command = 'move\ndx:11\ndy:-8\ndown:0\n\n';
                 for (let i = 0; i < 22; i++) {
                     node.buttonSocket.send(command);
                 }
+
                 setTimeout(() => {
                     node.buttonSocket.send('click');
                 }, 5000);
             }
-        }
+        };
 
         this.register = function (lgtvNode) {
             node.users[lgtvNode.id] = lgtvNode;
@@ -163,13 +164,13 @@ module.exports = function (RED) {
         };
     }
 
-    RED.httpAdmin.get('/lgtv-connect', (req, res) => {
+    RED.httpAdmin.get('/lgtv-connect', (request, response) => {
         if (!status || status === 'Close') {
             lgtv = require('lgtv2')({
-                url: 'ws://' + req.query.host + ':3000',
+                url: 'ws://' + request.query.host + ':3000',
                 saveKey(key, cb) {
                     token = key;
-                    RED.nodes.addCredentials(req.query.id, {
+                    RED.nodes.addCredentials(request.query.id, {
                         token: key
                     });
                     if (typeof cb === 'function') {
@@ -194,8 +195,8 @@ module.exports = function (RED) {
                 status = 'Connected';
             });
 
-            lgtv.on('error', e => {
-                status = 'Error: ' + e.code.toLowerCase();
+            lgtv.on('error', error => {
+                status = 'Error: ' + error.code.toLowerCase();
             });
 
             lgtv.on('prompt', () => {
@@ -203,7 +204,7 @@ module.exports = function (RED) {
             });
         }
 
-        res.status(200).send(JSON.stringify({
+        response.status(200).send(JSON.stringify({
             state: status,
             token
         }));
@@ -211,7 +212,7 @@ module.exports = function (RED) {
 
     RED.nodes.registerType('lgtv-config', LgtvConfigNode, {
         credentials: {
-            token: { type: 'text' }
+            token: {type: 'text'}
         }
     });
 };

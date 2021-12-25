@@ -13,10 +13,10 @@ module.exports = function (RED) {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
-                node.tvConn.request(msg.topic, msg.payload, (err, res) => {
+            node.on('input', message => {
+                node.tvConn.request(message.topic, message.payload, (err, response) => {
                     if (!err) {
-                        node.send({payload: res});
+                        node.send({payload: response});
                     }
                 });
             });

@@ -12,21 +12,21 @@ module.exports = function (RED) {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
+            node.on('input', message => {
                 if (!node.tvConn.buttonSocket) {
                     return;
                 }
 
-                switch (msg.topic) {
+                switch (message.topic) {
                     case 'drag':
-                        if (msg.payload) {
-                            node.tvConn.buttonSocket.send('drag', {dx: msg.payload.dx, dy: msg.payload.dy, drag: 1});
+                        if (message.payload) {
+                            node.tvConn.buttonSocket.send('drag', {dx: message.payload.dx, dy: message.payload.dy, drag: 1});
                         }
 
                         break;
                     case 'move':
-                        if (msg.payload) {
-                            node.tvConn.buttonSocket.send('move', {dx: msg.payload.dx, dy: msg.payload.dy});
+                        if (message.payload) {
+                            node.tvConn.buttonSocket.send('move', {dx: message.payload.dx, dy: message.payload.dy});
                         }
 
                         break;

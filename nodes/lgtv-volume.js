@@ -15,32 +15,32 @@ module.exports = function (RED) {
             });
 
             if (node._wireCount) {
-                node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', (err, res) => {
-                    if (!err && res && res && res.changed.indexOf('volume') !== -1) {
-                        node.send({payload: res.volume});
+                node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', (err, response) => {
+                    if (!err && response && response && response.changed.includes('volume')) {
+                        node.send({payload: response.volume});
                     }
                 });
 
                 node.tvConn.on('tvconnect', () => {
-                    node.tvConn.request('ssap://audio/getVolume', (err, res) => {
-                        if (!err && res) {
-                            node.send({payload: res.volume});
+                    node.tvConn.request('ssap://audio/getVolume', (err, response) => {
+                        if (!err && response) {
+                            node.send({payload: response.volume});
                         }
                     });
                 });
             }
 
-            node.on('input', msg => {
-                msg.payload = parseInt(msg.payload, 10) || 0;
-                if (msg.payload > 100) {
-                    msg.payload = 100;
-                } else if (msg.payload < 0) {
-                    msg.payload = 0;
+            node.on('input', message => {
+                message.payload = Number.parseInt(message.payload, 10) || 0;
+                if (message.payload > 100) {
+                    message.payload = 100;
+                } else if (message.payload < 0) {
+                    message.payload = 0;
                 }
 
-                node.tvConn.request('ssap://audio/setVolume', {volume: msg.payload}, (err, res) => {
-                    if (!err && !res.errorCode && node.passthru) {
-                        node.send(msg);
+                node.tvConn.request('ssap://audio/setVolume', {volume: message.payload}, (err, response) => {
+                    if (!err && !response.errorCode && node.passthru) {
+                        node.send(message);
                     }
                 });
             });

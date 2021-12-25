@@ -12,41 +12,41 @@ module.exports = function (RED) {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
+            node.on('input', message => {
                 let url;
 
-                switch (msg.payload) {
+                switch (message.payload) {
                     case 'play':
                     case 'pause':
                     case 'stop':
                     case 'rewind':
                     case 'fastForward':
-                        url = 'ssap://media.controls/' + msg.payload;
+                        url = 'ssap://media.controls/' + message.payload;
                         break;
 
                     case 'set3DOn':
                     case 'set3DOff':
-                        url = 'ssap://com.webos.service.tv.display/' + msg.payload;
+                        url = 'ssap://com.webos.service.tv.display/' + message.payload;
                         break;
 
                     case 'volumeUp':
                     case 'volumeDown':
-                        url = 'ssap://audio/' + msg.payload;
+                        url = 'ssap://audio/' + message.payload;
                         break;
 
                     case 'channelUp':
                     case 'channelDown':
-                        url = 'ssap://tv/' + msg.payload;
+                        url = 'ssap://tv/' + message.payload;
                         break;
 
                     case 'turnOff':
                     case 'turnOn':
-                        url = 'ssap://system/' + msg.payload;
+                        url = 'ssap://system/' + message.payload;
                         break;
 
                     case 'sendEnterKey':
                     case 'deleteCharacters':
-                        url = 'ssap://com.webos.service.ime/' + msg.payload;
+                        url = 'ssap://com.webos.service.ime/' + message.payload;
                         break;
 
                     default:
