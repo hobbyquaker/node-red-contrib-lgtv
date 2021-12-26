@@ -12,10 +12,10 @@ module.exports = function (RED) {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
-                const payload = {message: msg.payload};
-                if (msg.url) {
-                    payload.onClick = {target: msg.url};
+            node.on('input', message => {
+                const payload = {message: message.payload};
+                if (message.url) {
+                    payload.onClick = {target: message.url};
                 }
 
                 node.tvConn.request('palm://system.notifications/createToast', payload);

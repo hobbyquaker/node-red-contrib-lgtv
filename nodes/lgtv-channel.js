@@ -16,13 +16,13 @@ module.exports = function (RED) {
             });
 
             if (node._wireCount) {
-                node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', (err, res) => {
-                    if (!err && res && res.appId === 'com.webos.app.livetv') {
+                node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', (err, response) => {
+                    if (!err && response && response.appId === 'com.webos.app.livetv') {
                         setTimeout(() => {
-                            node.tvConn.subscribe(node.id, 'ssap://tv/getCurrentChannel', (err, res) => {
-                                if (!err && res) {
-                                    res.payload = res[node.payloadType];
-                                    node.send(res);
+                            node.tvConn.subscribe(node.id, 'ssap://tv/getCurrentChannel', (err, currentChannelResponse) => {
+                                if (!err && currentChannelResponse) {
+                                    currentChannelResponse.payload = currentChannelResponse[node.payloadType];
+                                    node.send(currentChannelResponse);
                                 }
                             });
                         }, 1000);
@@ -30,12 +30,12 @@ module.exports = function (RED) {
                 });
 
                 node.tvConn.on('tvconnect', () => {
-                    node.tvConn.request('ssap://com.webos.applicationManager/getForegroundAppInfo', (err, res) => {
-                        if (!err && res && res.appId === 'com.webos.app.livetv') {
-                            node.tvConn.request('ssap://tv/getCurrentChannel', (err, res) => {
-                                if (!err && res) {
-                                    res.payload = res[node.payloadType];
-                                    node.send(res);
+                    node.tvConn.request('ssap://com.webos.applicationManager/getForegroundAppInfo', (err, response) => {
+                        if (!err && response && response.appId === 'com.webos.app.livetv') {
+                            node.tvConn.request('ssap://tv/getCurrentChannel', (err, currentChannelResponse) => {
+                                if (!err && currentChannelResponse) {
+                                    currentChannelResponse.payload = currentChannelResponse[node.payloadType];
+                                    node.send(currentChannelResponse);
                                 }
                             });
                         }
@@ -43,10 +43,10 @@ module.exports = function (RED) {
                 });
             }
 
-            node.on('input', msg => {
-                node.tvConn.request('ssap://tv/openChannel', {channelId: msg.payload}, (err, res) => {
-                    if (!err && !res.errorCode && node.passthru) {
-                        node.send(msg);
+            node.on('input', message => {
+                node.tvConn.request('ssap://tv/openChannel', {channelId: message.payload}, (err, openChannelResponse) => {
+                    if (!err && !openChannelResponse.errorCode && node.passthru) {
+                        node.send(message);
                     }
                 });
             });

@@ -12,9 +12,9 @@ module.exports = function (RED) {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
-                if (msg.payload && node.tvConn.buttonSocket) {
-                    node.tvConn.buttonSocket.send('button', {name: (String(msg.payload)).toUpperCase()});
+            node.on('input', message => {
+                if (message.payload && node.tvConn.buttonSocket) {
+                    node.tvConn.buttonSocket.send('button', {name: (String(message.payload)).toUpperCase()});
                 }
             });
         } else {

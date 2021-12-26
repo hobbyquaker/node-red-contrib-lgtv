@@ -1,11 +1,7 @@
-# node-red-contrib-lgtv
+# node-red-contrib-lgtv-updated
 
-[![NPM version](https://badge.fury.io/js/node-red-contrib-lgtv.svg)](http://badge.fury.io/js/node-red-contrib-lgtv)
-[![npm](https://img.shields.io/npm/dt/node-red-contrib-lgtv.svg)]()
-[![dependencies Status](https://david-dm.org/hobbyquaker/node-red-contrib-lgtv/status.svg)](https://david-dm.org/hobbyquaker/node-red-contrib-lgtv)
-[![Build Status](https://travis-ci.org/hobbyquaker/node-red-contrib-lgtv.svg?branch=master)](https://travis-ci.org/hobbyquaker/node-red-contrib-lgtv)
-[![License][mit-badge]][mit-url]
-
+This repository is a fork from [node-red-contrib-lgtv](https://github.com/hobbyquaker/node-red-contrib-lgtv).     
+It merges the existing forks to provide fullscreen, dependency updates, etc.
 > Node-RED Nodes to Control LG webOS Smart TVs :tv:
 
 With these Nodes you can:

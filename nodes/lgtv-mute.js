@@ -14,26 +14,26 @@ module.exports = function (RED) {
             });
 
             if (node._wireCount) {
-                node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', (err, res) => {
-                    if (!err && res && res && res.changed.indexOf('muted') !== -1) {
-                        node.send({payload: res.muted});
+                node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', (err, response) => {
+                    if (!err && response && response && response.changed.includes('muted')) {
+                        node.send({payload: response.muted});
                     }
                 });
 
                 node.tvConn.on('tvconnect', () => {
-                    node.tvConn.request('ssap://audio/getVolume', (err, res) => {
-                        if (!err && res) {
-                            node.send({payload: res.muted});
+                    node.tvConn.request('ssap://audio/getVolume', (err, response) => {
+                        if (!err && response) {
+                            node.send({payload: response.muted});
                         }
                     });
                 });
             }
 
-            node.on('input', msg => {
-                msg.payload = Boolean(msg.payload);
-                node.tvConn.request('ssap://audio/setMute', {mute: msg.payload}, (err, res) => {
-                    if (!err && !res.errorCode && node.passthru) {
-                        node.send(msg);
+            node.on('input', message => {
+                message.payload = Boolean(message.payload);
+                node.tvConn.request('ssap://audio/setMute', {mute: message.payload}, (err, response) => {
+                    if (!err && !response.errorCode && node.passthru) {
+                        node.send(message);
                     }
                 });
             });
