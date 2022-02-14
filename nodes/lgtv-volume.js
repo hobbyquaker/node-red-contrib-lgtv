@@ -16,7 +16,7 @@ module.exports = function (RED) {
 
             if (node._wireCount) {
                 node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', (err, res) => {
-                    if (!err && res && res && res.changed.indexOf('volume') !== -1) {
+                    if (!err && res && res && res.changed && res.changed.indexOf('volume') !== -1) {
                         node.send({payload: res.volume});
                     }
                 });
