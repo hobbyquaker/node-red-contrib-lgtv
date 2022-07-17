@@ -14,7 +14,12 @@ module.exports = function (RED) {
             });
 
             node.on('input', msg => {
-                node.tvConn.request('ssap://system.launcher/launch', {id: 'youtube.leanback.v4', contentId: msg.payload});
+                node.tvConn.request('ssap://com.webos.applicationManager/launch', {
+                    id: 'youtube.leanback.v4',
+                    'params': {
+                        'contentTarget': 'https://www.youtube.com/tv?v=' + msg.payload
+                    }
+                });
             });
         } else {
             this.error('No TV Configuration');
