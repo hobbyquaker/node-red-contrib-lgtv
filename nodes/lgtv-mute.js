@@ -15,15 +15,29 @@ module.exports = function (RED) {
 
             if (node._wireCount) {
                 node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', (err, res) => {
-                    if (!err && res && res && res.changed.indexOf('muted') !== -1) {
-                        node.send({payload: res.muted});
+//                     if (!err && res && res && res.changed.indexOf('muted') !== -1) {
+//                         node.send({payload: res.muted});
+//                     }
+                    if (!err && res) {
+						if (res.muted !== undefined){
+							node.send({payload: res.muted});
+						}
+                        if (res.volumeStatus !== undefined){
+							node.send({payload: res.volumeStatus.muteStatus});
+						}
                     }
                 });
 
                 node.tvConn.on('tvconnect', () => {
                     node.tvConn.request('ssap://audio/getVolume', (err, res) => {
                         if (!err && res) {
-                            node.send({payload: res.muted});
+//                             node.send({payload: res.muted});
+                            if (res.muted !== undefined){
+								node.send({payload: res.muted});
+							}
+							if (res.volumeStatus !== undefined){
+								node.send({payload: res.volumeStatus.muteStatus});
+							}
                         }
                     });
                 });
