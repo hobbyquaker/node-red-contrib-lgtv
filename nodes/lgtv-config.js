@@ -12,7 +12,7 @@ module.exports = function (RED) {
         const subscriptions = {};
 
         const lgtv = require('lgtv2')({
-            url: 'ws://' + node.host + ':3000',
+            url: 'wss://' + node.host + ':3001',
             clientKey: node.credentials.token,
             saveKey(key, cb) {
                 token = key;
@@ -154,7 +154,7 @@ module.exports = function (RED) {
     RED.httpAdmin.get('/lgtv-connect', (req, res) => {
         if (!status || status === 'Close') {
             lgtv = require('lgtv2')({
-                url: 'ws://' + req.query.host + ':3000',
+                url: 'wss://' + req.query.host + ':3001',
                 saveKey(key, cb) {
                     token = key;
                     RED.nodes.addCredentials(req.query.id, {
