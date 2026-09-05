@@ -37,7 +37,7 @@
         <label for="node-input-name"><i class="icon-bookmark"></i> Name</label>
         <input type="text" id="node-input-name">
     </div>
-     <div class="form-row">
+    <div class="form-row">
         <label for="node-input-payloadType"><i class="icon-bookmark"></i> Output Payload</label>
         <select id="node-input-payloadType">
             <option value="channelId">channelId</option>
@@ -45,8 +45,7 @@
             <option value="channelName">channelName</option>
         </select>
     </div>
-    </div>
-        <div class="form-row">
+    <div class="form-row">
         <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> Pass <code>msg</code> through to output after successfully sending to TV: </label>
         <input type="checkbox" checked id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:baseline;">
     </div>
@@ -54,6 +53,13 @@
 
 <script type="text/x-red" data-help-name="lgtv-channel">
     <p>LiveTV Channel</p>
-    <p>You need to send the <code>channelId</code> string as <code>msg.payload</code></p>
-    <p>Use the Output to lookup channelIds</p>
+    <p>
+        A string <code>msg.payload</code> is sent as <code>channelId</code>, a number as <code>channelNumber</code>.
+    </p>
+    <p>
+        The output reports the current channel while LiveTV is in the foreground: the whole response of
+        <code>ssap://tv/getCurrentChannel</code> (<code>channelId</code>, <code>channelNumber</code>,
+        <code>channelName</code>, ...) with the selected property copied to <code>msg.payload</code>. Use it to
+        look up channel ids.
+    </p>
 </script>

@@ -34,17 +34,21 @@ module.exports = function (RED) {
             });
 
             if (node._wireCount) {
-                node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', (err, res) => {
-                    if (!err && res && res.appId === 'com.webos.app.livetv') {
-                        setTimeout(() => {
-                            node.tvConn.subscribe(node.id, 'ssap://tv/getCurrentChannel', (err, res) => {
-                                if (!err && res) {
-                                    sendChannel(res);
-                                }
-                            });
-                        }, 1000);
-                    }
-                });
+                node.tvConn.subscribe(
+                    node.id,
+                    'ssap://com.webos.applicationManager/getForegroundAppInfo',
+                    (err, res) => {
+                        if (!err && res && res.appId === 'com.webos.app.livetv') {
+                            setTimeout(() => {
+                                node.tvConn.subscribe(node.id, 'ssap://tv/getCurrentChannel', (err, res) => {
+                                    if (!err && res) {
+                                        sendChannel(res);
+                                    }
+                                });
+                            }, 1000);
+                        }
+                    },
+                );
 
                 node.tvConn.on('tvconnect', onConnect);
             }
@@ -52,7 +56,9 @@ module.exports = function (RED) {
             node.on('input', (msg) => {
                 // a number selects by channel number, a string is the channelId
                 const payload =
-                    typeof msg.payload === 'number' ? {channelNumber: String(msg.payload)} : {channelId: String(msg.payload)};
+                    typeof msg.payload === 'number'
+                        ? {channelNumber: String(msg.payload)}
+                        : {channelId: String(msg.payload)};
                 node.tvConn.request('ssap://tv/openChannel', payload, (err) => {
                     if (err) {
                         node.error(err, msg);

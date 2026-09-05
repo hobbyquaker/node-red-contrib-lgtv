@@ -39,6 +39,8 @@
         <ul>
             <li>turnOn</li>
             <li>turnOff</li>
+            <li>turnOnScreen</li>
+            <li>turnOffScreen</li>
             <li>play</li>
             <li>pause</li>
             <li>stop</li>
@@ -54,9 +56,16 @@
             <li>deleteCharacters</li>
         </ul>
     </p>
+    <p>
+        <code>turnOn</code> sends Wake-on-LAN magic packets, because a TV in standby is not reachable over
+        the API. It uses the MAC address from the config node or the addresses learned from the TV during
+        an earlier connection, and needs <i>Mobile TV On</i> / <i>Turn on via Wi-Fi</i> enabled on the TV.
+        After turning on it takes about 25 seconds until the TV accepts commands.
+    </p>
     <p><b>Output:</b> Connection State</p>
     <p>
-        A <code>msg.payload</code> <code>true</code> or <code>false</code> is send when the connection to the TV is
+        A <code>msg.payload</code> <code>true</code> or <code>false</code> is sent when the connection to the TV is
         established or closed.
     </p>
+    <p>Failed commands are reported as errors and can be handled with a catch node.</p>
 </script>

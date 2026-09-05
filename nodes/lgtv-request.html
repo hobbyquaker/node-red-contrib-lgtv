@@ -36,6 +36,14 @@
 <script type="text/x-red" data-help-name="lgtv-request">
     <p>Send arbitrary requests to the API</p>
     <p><code>msg.topic</code> is the API URL. Example: <code>ssap://com.webos.applicationManager/listLaunchPoints</code></p>
-    <p>Send an empty object (<code>{}</code>) as <code>msg.payload</code> if you want to omit the payload.</p>
-    <p>See <a href="http://webostv.developer.lge.com/api" target="_blank">http://webostv.developer.lge.com/api</a></p>
+    <p><code>msg.payload</code> is the request payload (an object); anything else is sent as an empty payload.</p>
+    <p>
+        The response replaces <code>msg.payload</code> on the output. Errors (TV not connected, or an error answer
+        from the TV such as <i>404 no such service or method</i>) are reported via <code>node.error</code> and can be
+        handled with a catch node.
+    </p>
+    <p>
+        A list of endpoints is in the <a href="https://github.com/hobbyquaker/lgtv2#commands" target="_blank">lgtv2
+        README</a>.
+    </p>
 </script>

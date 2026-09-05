@@ -36,4 +36,9 @@
 <script type="text/x-red" data-help-name="lgtv-toast">
     <p>Shows a Toast (Popup in the upper right corner).</p>
     <p><code>msg.payload</code> can be any string, a few HTML elements are allowed also.</p>
+    <p>
+        Optional: <code>msg.url</code> is opened when the toast is clicked. <code>msg.iconData</code> shows an
+        icon - a base64 encoded image string or a Buffer (e.g. from a <i>file in</i> node), with the format in
+        <code>msg.iconExtension</code> (default <code>png</code>).
+    </p>
 </script>
