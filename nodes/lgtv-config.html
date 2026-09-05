@@ -5,6 +5,16 @@
             host: {
                 value: 'lgwebostv',
                 required: true
+            },
+            secure: {
+                value: 'auto'
+            },
+            port: {
+                value: '',
+                validate: RED.validators.regex(/^(\d+)?$/)
+            },
+            mac: {
+                value: ''
             }
         },
         credentials: {
@@ -18,7 +28,9 @@
         oneditprepare() {
             const nodeId = this.id;
             let timeout;
-            $('#node-config-dialog-ok').button('option', 'disabled', true);
+            if (!$('#node-config-input-token').val()) {
+                $('#node-config-dialog-ok').button('option', 'disabled', true);
+            }
             $('#lgtv-connect').button().click(() => {
                 $('#lgtv-connect').button('option', 'disabled', true);
                 $('#lgtv-spinner').removeClass('hide');
@@ -30,19 +42,29 @@
             });
 
             function pollConnection() {
-                $.getJSON('lgtv-connect/?id=' + nodeId + '&host=' + $('#node-config-input-host').val(), data => {
-                    $('#lgtv-state').html(data.state);
+                const query = {
+                    id: nodeId,
+                    host: $('#node-config-input-host').val(),
+                    secure: $('#node-config-input-secure').val(),
+                    port: $('#node-config-input-port').val()
+                };
+                $.getJSON('lgtv-connect', query, data => {
+                    $('#lgtv-state').text(data.state);
                     if (data.token) {
                         $('#node-config-dialog-ok').button('option', 'disabled', false);
                         $('#lgtv-spinner').addClass('hide');
+                        $('#lgtv-connect').button('option', 'disabled', false);
                         $('#node-config-input-token').val(data.token);
                     } else if (timeout) {
-                        $('#lgtv-state').html('');
                         $('#lgtv-spinner').addClass('hide');
                         $('#lgtv-connect').button('option', 'disabled', false);
                     } else {
                         setTimeout(pollConnection, 1000);
                     }
+                }).fail(() => {
+                    $('#lgtv-state').text('request failed');
+                    $('#lgtv-spinner').addClass('hide');
+                    $('#lgtv-connect').button('option', 'disabled', false);
                 });
             }
         }
@@ -51,15 +73,28 @@
 
 <script type="text/x-red" data-template-name="lgtv-config">
     <div class="form-row">
-        <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
-        <input type="text" id="node-config-input-host">
+        <label for="node-config-input-host"><i class="fa fa-television"></i> Host</label>
+        <input type="text" id="node-config-input-host" placeholder="hostname or IP address">
     </div>
     <div class="form-row">
-        <label for="node-config-input-token"><i class="icon-bookmark"></i> Token</label>
+        <label for="node-config-input-secure"><i class="fa fa-lock"></i> Connection</label>
+        <select id="node-config-input-secure" style="width: 55%">
+            <option value="auto">auto (wss:3001, fallback ws:3000)</option>
+            <option value="wss">secure - wss://host:3001</option>
+            <option value="ws">plain - ws://host:3000</option>
+        </select>
+        <input type="text" id="node-config-input-port" placeholder="port" style="width: 15%; margin-left: 4px">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-mac"><i class="fa fa-power-off"></i> MAC</label>
+        <input type="text" id="node-config-input-mac" placeholder="optional, for Wake-on-LAN">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-token"><i class="fa fa-key"></i> Token</label>
         <input type="text" id="node-config-input-token" disabled>
     </div>
     <div class="form-row">
-        <label for="lgtv-state"><i class="icon-bookmark"></i> Connection</label>
+        <label for="lgtv-state"><i class="fa fa-plug"></i> Connection</label>
         <span id="lgtv-state"></span>
     </div>
 
@@ -67,4 +102,25 @@
         <label for="lgtv-connect"><span id="lgtv-spinner" class="hide"><img src="red/images/spin.svg"></span></label>
         <button id="lgtv-connect">Connect</button>
     </div>
+</script>
+
+<script type="text/x-red" data-help-name="lgtv-config">
+    <p>Connection to one LG webOS TV.</p>
+    <p>
+        Enter the hostname or IP address of the TV and click <b>Connect</b>. The TV shows a pairing prompt
+        ("LG Connect Apps"), accept it and the token is filled in automatically. Both the secure
+        (<code>wss://</code>, port 3001, firmware from 2018 on) and the old plain websocket (<code>ws://</code>,
+        port 3000) are tried, whichever works is used.
+    </p>
+    <p>
+        <b>Connection</b> can pin one of the two; a <b>port</b> overrides the default port (e.g. behind port
+        forwarding) and also disables the automatic fallback.
+    </p>
+    <p>
+        <b>MAC</b> is optional and only used to turn the TV on via Wake-on-LAN (<code>turnOn</code> in the
+        control node). After the first successful connection the MAC addresses reported by the TV are learned
+        and cached, so the field can usually stay empty. The TV must have <i>Mobile TV On</i> /
+        <i>Turn on via Wi-Fi</i> (2025+ models: <i>IP control settings → Wake on LAN</i>) enabled.
+    </p>
+    <p>Note: after switching the TV on it takes about 25 seconds until its API is available.</p>
 </script>
