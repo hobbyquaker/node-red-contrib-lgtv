@@ -14,9 +14,18 @@ module.exports = function (RED) {
             });
 
             node.on('input', (msg) => {
-                node.tvConn.request(msg.topic, msg.payload, (err, res) => {
-                    if (!err) {
-                        node.send({payload: res});
+                if (typeof msg.topic !== 'string' || !msg.topic) {
+                    node.error(new Error('msg.topic must be the ssap:// uri'), msg);
+                    return;
+                }
+                const payload = msg.payload && typeof msg.payload === 'object' ? msg.payload : {};
+                node.tvConn.request(msg.topic, payload, (err, res) => {
+                    if (err) {
+                        // errors from the TV (e.g. 404 no such service) arrive with code ESSAP
+                        node.error(err, msg);
+                    } else {
+                        msg.payload = res;
+                        node.send(msg);
                     }
                 });
             });

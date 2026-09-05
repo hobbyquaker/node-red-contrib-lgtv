@@ -8,7 +8,18 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
+            const onConnect = () => {
+                node.send({payload: true});
+            };
+            const onClose = () => {
+                node.send({payload: false});
+            };
+            node.tvConn.on('tvconnect', onConnect);
+            node.tvConn.on('tvclose', onClose);
+
             this.on('close', (done) => {
+                node.tvConn.removeListener('tvconnect', onConnect);
+                node.tvConn.removeListener('tvclose', onClose);
                 node.tvConn.deregister(node, done);
             });
 
@@ -40,8 +51,12 @@ module.exports = function (RED) {
                         break;
 
                     case 'turnOff':
-                    case 'turnOn':
-                        url = 'ssap://system/' + msg.payload;
+                        url = 'ssap://system/turnOff';
+                        break;
+
+                    case 'turnOnScreen':
+                    case 'turnOffScreen':
+                        url = 'ssap://com.webos.service.tvpower/power/' + msg.payload;
                         break;
 
                     case 'sendEnterKey':
@@ -49,20 +64,25 @@ module.exports = function (RED) {
                         url = 'ssap://com.webos.service.ime/' + msg.payload;
                         break;
 
+                    case 'turnOn':
+                        // the TV is unreachable while off: Wake-on-LAN instead of an API call
+                        node.tvConn.wake((err) => {
+                            if (err) {
+                                node.error(err, msg);
+                            }
+                        });
+                        return;
+
                     default:
+                        node.warn('unknown command: ' + msg.payload);
+                        return;
                 }
 
-                if (url) {
-                    node.tvConn.request(url);
-                }
-            });
-
-            node.tvConn.on('tvconnect', () => {
-                node.send({payload: true});
-            });
-
-            node.tvConn.on('tvclose', () => {
-                node.send({payload: false});
+                node.tvConn.request(url, (err) => {
+                    if (err) {
+                        node.error(err, msg);
+                    }
+                });
             });
         } else {
             this.error('No TV Configuration');

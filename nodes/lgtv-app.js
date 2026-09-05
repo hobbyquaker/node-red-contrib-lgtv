@@ -14,21 +14,19 @@ module.exports = function (RED) {
             });
 
             if (node._wireCount) {
-                node.tvConn.subscribe(
-                    node.id,
-                    'ssap://com.webos.applicationManager/getForegroundAppInfo',
-                    (err, res) => {
-                        if (!err && res && res.appId) {
-                            node.send({payload: res.appId});
-                        }
-                    },
-                );
+                node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', (err, res) => {
+                    if (!err && res && res.appId) {
+                        node.send({payload: res.appId});
+                    }
+                });
             }
 
             node.on('input', (msg) => {
                 msg.payload = String(msg.payload);
-                node.tvConn.request('ssap://system.launcher/launch', {id: msg.payload}, (err, res) => {
-                    if (!err && !res.errorCode && node.passthru) {
+                node.tvConn.request('ssap://system.launcher/launch', {id: msg.payload}, (err) => {
+                    if (err) {
+                        node.error(err, msg);
+                    } else if (node.passthru) {
                         node.send(msg);
                     }
                 });

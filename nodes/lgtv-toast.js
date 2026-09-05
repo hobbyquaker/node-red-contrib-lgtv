@@ -13,12 +13,23 @@ module.exports = function (RED) {
             });
 
             node.on('input', (msg) => {
-                const payload = {message: msg.payload};
+                const payload = {message: String(msg.payload)};
                 if (msg.url) {
                     payload.onClick = {target: msg.url};
                 }
+                if (msg.iconData) {
+                    // base64 encoded image, or a Buffer e.g. from a file in node
+                    payload.iconData = Buffer.isBuffer(msg.iconData)
+                        ? msg.iconData.toString('base64')
+                        : String(msg.iconData);
+                    payload.iconExtension = msg.iconExtension || 'png';
+                }
 
-                node.tvConn.request('palm://system.notifications/createToast', payload);
+                node.tvConn.request('ssap://system.notifications/createToast', payload, (err) => {
+                    if (err) {
+                        node.error(err, msg);
+                    }
+                });
             });
         } else {
             this.error('No TV Configuration');

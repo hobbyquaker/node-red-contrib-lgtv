@@ -13,27 +13,33 @@ module.exports = function (RED) {
             });
 
             node.on('input', (msg) => {
-                if (!node.tvConn.buttonSocket) {
+                const socket = node.tvConn.buttonSocket;
+                if (!socket) {
+                    node.error(new Error('not connected to ' + node.tvConn.host), msg);
                     return;
                 }
 
                 switch (msg.topic) {
                     case 'drag':
                         if (msg.payload) {
-                            node.tvConn.buttonSocket.send('drag', {dx: msg.payload.dx, dy: msg.payload.dy, drag: 1});
+                            socket.send('drag', {dx: msg.payload.dx, dy: msg.payload.dy, drag: 1});
                         }
-
                         break;
                     case 'move':
                         if (msg.payload) {
-                            node.tvConn.buttonSocket.send('move', {dx: msg.payload.dx, dy: msg.payload.dy});
+                            socket.send('move', {dx: msg.payload.dx, dy: msg.payload.dy});
                         }
-
+                        break;
+                    case 'scroll':
+                        if (msg.payload) {
+                            socket.send('scroll', {dx: msg.payload.dx || 0, dy: msg.payload.dy || 0});
+                        }
                         break;
                     case 'click':
-                        node.tvConn.buttonSocket.send('click');
+                        socket.send('click');
                         break;
                     default:
+                        node.warn('unknown topic: ' + msg.topic);
                 }
             });
         } else {

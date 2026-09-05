@@ -15,18 +15,12 @@ module.exports = function (RED) {
             });
 
             if (node._wireCount) {
+                // lgtv2 normalizes the payload to {volume, muted, changed} on every firmware; the first
+                // response after (re)connect carries the current value, so no extra request is needed
                 node.tvConn.subscribe(node.id, 'ssap://audio/getVolume', (err, res) => {
-                    if (!err && res && res && res.changed.indexOf('volume') !== -1) {
+                    if (!err && res && Array.isArray(res.changed) && res.changed.includes('volume')) {
                         node.send({payload: res.volume});
                     }
-                });
-
-                node.tvConn.on('tvconnect', () => {
-                    node.tvConn.request('ssap://audio/getVolume', (err, res) => {
-                        if (!err && res) {
-                            node.send({payload: res.volume});
-                        }
-                    });
                 });
             }
 
@@ -38,8 +32,10 @@ module.exports = function (RED) {
                     msg.payload = 0;
                 }
 
-                node.tvConn.request('ssap://audio/setVolume', {volume: msg.payload}, (err, res) => {
-                    if (!err && !res.errorCode && node.passthru) {
+                node.tvConn.request('ssap://audio/setVolume', {volume: msg.payload}, (err) => {
+                    if (err) {
+                        node.error(err, msg);
+                    } else if (node.passthru) {
                         node.send(msg);
                     }
                 });
