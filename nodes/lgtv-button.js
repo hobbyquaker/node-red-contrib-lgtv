@@ -8,13 +8,13 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', done => {
+            this.on('close', (done) => {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
+            node.on('input', (msg) => {
                 if (msg.payload && node.tvConn.buttonSocket) {
-                    node.tvConn.buttonSocket.send('button', {name: (String(msg.payload)).toUpperCase()});
+                    node.tvConn.buttonSocket.send('button', {name: String(msg.payload).toUpperCase()});
                 }
             });
         } else {

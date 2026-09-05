@@ -10,7 +10,7 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', done => {
+            this.on('close', (done) => {
                 node.tvConn.deregister(node, done);
             });
 
@@ -30,7 +30,7 @@ module.exports = function (RED) {
                 });
             }
 
-            node.on('input', msg => {
+            node.on('input', (msg) => {
                 msg.payload = parseInt(msg.payload, 10) || 0;
                 if (msg.payload > 100) {
                     msg.payload = 100;

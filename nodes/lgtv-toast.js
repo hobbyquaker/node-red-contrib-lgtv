@@ -8,11 +8,11 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', done => {
+            this.on('close', (done) => {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
+            node.on('input', (msg) => {
                 const payload = {message: msg.payload};
                 if (msg.url) {
                     payload.onClick = {target: msg.url};

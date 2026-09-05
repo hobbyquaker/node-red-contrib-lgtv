@@ -9,19 +9,23 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', done => {
+            this.on('close', (done) => {
                 node.tvConn.deregister(node, done);
             });
 
             if (node._wireCount) {
-                node.tvConn.subscribe(node.id, 'ssap://com.webos.applicationManager/getForegroundAppInfo', (err, res) => {
-                    if (!err && res && res.appId) {
-                        node.send({payload: res.appId});
-                    }
-                });
+                node.tvConn.subscribe(
+                    node.id,
+                    'ssap://com.webos.applicationManager/getForegroundAppInfo',
+                    (err, res) => {
+                        if (!err && res && res.appId) {
+                            node.send({payload: res.appId});
+                        }
+                    },
+                );
             }
 
-            node.on('input', msg => {
+            node.on('input', (msg) => {
                 msg.payload = String(msg.payload);
                 node.tvConn.request('ssap://system.launcher/launch', {id: msg.payload}, (err, res) => {
                     if (!err && !res.errorCode && node.passthru) {

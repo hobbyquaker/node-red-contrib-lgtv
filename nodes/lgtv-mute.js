@@ -9,7 +9,7 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', done => {
+            this.on('close', (done) => {
                 node.tvConn.deregister(node, done);
             });
 
@@ -29,7 +29,7 @@ module.exports = function (RED) {
                 });
             }
 
-            node.on('input', msg => {
+            node.on('input', (msg) => {
                 msg.payload = Boolean(msg.payload);
                 node.tvConn.request('ssap://audio/setMute', {mute: msg.payload}, (err, res) => {
                     if (!err && !res.errorCode && node.passthru) {

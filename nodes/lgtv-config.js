@@ -17,12 +17,12 @@ module.exports = function (RED) {
             saveKey(key, cb) {
                 token = key;
                 RED.nodes.addCredentials(node.id, {
-                    token: key
+                    token: key,
                 });
                 if (typeof cb === 'function') {
                     cb();
                 }
-            }
+            },
         });
 
         lgtv.on('connecting', () => {
@@ -33,24 +33,22 @@ module.exports = function (RED) {
             node.setStatus('connect');
             node.connected = true;
 
-            Object.keys(subscriptions).forEach(url => {
+            Object.keys(subscriptions).forEach((url) => {
                 lgtv.subscribe(url, (err, res) => {
                     node.subscriptionHandler(url, err, res);
                 });
             });
 
-            lgtv.getSocket('ssap://com.webos.service.networkinput/getPointerInputSocket',
-                (err, sock) => {
-                    if (!err) {
-                        node.buttonSocket = sock;
-                    }
+            lgtv.getSocket('ssap://com.webos.service.networkinput/getPointerInputSocket', (err, sock) => {
+                if (!err) {
+                    node.buttonSocket = sock;
                 }
-            );
+            });
 
             node.emit('tvconnect');
         });
 
-        lgtv.on('error', e => {
+        lgtv.on('error', (e) => {
             node.connected = false;
             node.setStatus(e.code);
         });
@@ -68,7 +66,7 @@ module.exports = function (RED) {
 
         this.subscriptionHandler = function (url, err, res) {
             if (subscriptions[url]) {
-                Object.keys(subscriptions[url]).forEach(id => {
+                Object.keys(subscriptions[url]).forEach((id) => {
                     subscriptions[url][id](err, res);
                 });
             }
@@ -99,7 +97,7 @@ module.exports = function (RED) {
 
         this.deregister = function (lgtvNode, done) {
             delete node.users[lgtvNode.id];
-            Object.keys(subscriptions).forEach(url => {
+            Object.keys(subscriptions).forEach((url) => {
                 delete subscriptions[url][lgtvNode.id];
             });
             return done();
@@ -113,39 +111,39 @@ module.exports = function (RED) {
                     s = {
                         fill: 'yellow',
                         shape: 'ring',
-                        text: 'node-red:common.status.connecting'
+                        text: 'node-red:common.status.connecting',
                     };
                     break;
                 case 'prompt':
                     s = {
                         fill: 'yellow',
                         shape: 'ring',
-                        text: c
+                        text: c,
                     };
                     break;
                 case 'connect':
                     s = {
                         fill: 'green',
                         shape: 'dot',
-                        text: 'node-red:common.status.connected'
+                        text: 'node-red:common.status.connected',
                     };
                     break;
                 case 'disconnected':
                     s = {
                         fill: 'red',
                         shape: 'ring',
-                        text: 'node-red:common.status.disconnected'
+                        text: 'node-red:common.status.disconnected',
                     };
                     break;
                 default:
                     s = {
                         fill: 'red',
                         shape: 'ring',
-                        text: c
+                        text: c,
                     };
             }
 
-            Object.keys(node.users).forEach(id => {
+            Object.keys(node.users).forEach((id) => {
                 node.users[id].status(s);
             });
         };
@@ -158,12 +156,12 @@ module.exports = function (RED) {
                 saveKey(key, cb) {
                     token = key;
                     RED.nodes.addCredentials(req.query.id, {
-                        token: key
+                        token: key,
                     });
                     if (typeof cb === 'function') {
                         cb();
                     }
-                }
+                },
             });
 
             status = 'Connecting';
@@ -182,7 +180,7 @@ module.exports = function (RED) {
                 status = 'Connected';
             });
 
-            lgtv.on('error', e => {
+            lgtv.on('error', (e) => {
                 status = 'Error: ' + e.code.toLowerCase();
             });
 
@@ -191,15 +189,17 @@ module.exports = function (RED) {
             });
         }
 
-        res.status(200).send(JSON.stringify({
-            state: status,
-            token
-        }));
+        res.status(200).send(
+            JSON.stringify({
+                state: status,
+                token,
+            }),
+        );
     });
 
     RED.nodes.registerType('lgtv-config', LgtvConfigNode, {
         credentials: {
-            token: {type: 'text'}
-        }
+            token: {type: 'text'},
+        },
     });
 };

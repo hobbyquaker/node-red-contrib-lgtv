@@ -9,12 +9,15 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', done => {
+            this.on('close', (done) => {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
-                node.tvConn.request('ssap://system.launcher/launch', {id: 'youtube.leanback.v4', contentId: msg.payload});
+            node.on('input', (msg) => {
+                node.tvConn.request('ssap://system.launcher/launch', {
+                    id: 'youtube.leanback.v4',
+                    contentId: msg.payload,
+                });
             });
         } else {
             this.error('No TV Configuration');

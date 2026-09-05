@@ -9,11 +9,11 @@ module.exports = function (RED) {
         if (this.tvConn) {
             this.tvConn.register(node);
 
-            this.on('close', done => {
+            this.on('close', (done) => {
                 node.tvConn.deregister(node, done);
             });
 
-            node.on('input', msg => {
+            node.on('input', (msg) => {
                 node.tvConn.request(msg.topic, msg.payload, (err, res) => {
                     if (!err) {
                         node.send({payload: res});
