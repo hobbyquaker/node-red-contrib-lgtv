@@ -5,7 +5,7 @@ Notable changes to node-red-contrib-lgtv. Format follows
 user-visible symptom and the cause, not the commit list (the release notes
 append commits automatically).
 
-## 2.0.0 (unreleased)
+## 2.0.0 (2026-09-05)
 
 Modernization release. Requires Node.js ^20.19 || ^22.12 || >=24 and
 Node-RED >= 4.0 (primary target: Node-RED 5 on Node 24). Existing flows and
