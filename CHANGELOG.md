@@ -5,6 +5,16 @@ Notable changes to node-red-contrib-lgtv. Format follows
 user-visible symptom and the cause, not the commit list (the release notes
 append commits automatically).
 
+## 2.0.1 (2026-09-05)
+
+### Fixed
+
+- Remote buttons, pointer movement and scrolling did nothing after pairing
+  with a webOS 26 TV; the pointer socket failed with
+  `401 insufficient permissions`. lgtv2's unsigned fallback manifest lacked
+  `CONTROL_INPUT_TEXT` and `CONTROL_MOUSE_AND_KEYBOARD`; fixed in lgtv2 2.0.2
+  (lgtv2#52, thanks @Voodoo2man).
+
 ## 2.0.0 (2026-09-05)
 
 Modernization release. Requires Node.js ^20.19 || ^22.12 || >=24 and
