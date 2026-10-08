@@ -43,5 +43,10 @@
 
 <script type="text/x-red" data-help-name="lgtv-mute">
     <p>Sound Mute</p>
-    <p><code>msg.payload</code> is boolean <code>true</code> or <code>false</code></p>
+    <p><b>Input:</b> <code>msg.payload</code> is boolean <code>true</code> or <code>false</code></p>
+    <p>
+        <b>Output:</b> <code>msg.payload</code> is the current mute state - once after connecting (also when the
+        node is deployed while the TV is connected) and on every change; with the pass-through option also the
+        sent <code>msg</code> after a successful command.
+    </p>
 </script>

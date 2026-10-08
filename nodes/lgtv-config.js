@@ -41,6 +41,8 @@ module.exports = function (RED) {
         node.setMaxListeners(0);
 
         const subscriptions = {};
+        // last successful answer per subscribed url, replayed to nodes that subscribe later
+        const lastResponse = {};
 
         const lgtv = new LGTV({
             ...connectionOptions(node.host, node.secure, node.port),
@@ -90,6 +92,7 @@ module.exports = function (RED) {
             const wasConnected = node.connected;
             node.connected = false;
             node.buttonSocket = null;
+            Object.keys(lastResponse).forEach((url) => delete lastResponse[url]);
             node.setStatus('close');
             if (wasConnected) {
                 node.emit('tvclose');
@@ -105,6 +108,9 @@ module.exports = function (RED) {
         });
 
         this.subscriptionHandler = function (url, err, res) {
+            if (!err && res) {
+                lastResponse[url] = res;
+            }
             if (subscriptions[url]) {
                 Object.keys(subscriptions[url]).forEach((id) => {
                     subscriptions[url][id](err, res);
@@ -120,6 +126,14 @@ module.exports = function (RED) {
                         node.subscriptionHandler(url, err, res);
                     });
                 }
+            } else if (node.connected && lastResponse[url]) {
+                // the url is already subscribed: the TV will not answer again until the value changes,
+                // so the late subscriber gets the current value (every field counts as changed for it)
+                const res = Object.assign({}, lastResponse[url]);
+                if (Array.isArray(res.changed)) {
+                    res.changed = Object.keys(res).filter((k) => !['returnValue', 'subscribed', 'changed'].includes(k));
+                }
+                setImmediate(() => callback(null, res));
             }
 
             subscriptions[url][id] = callback;
@@ -154,6 +168,14 @@ module.exports = function (RED) {
         this.register = function (lgtvNode) {
             node.users[lgtvNode.id] = lgtvNode;
             lgtvNode.status(node.statusObject());
+            // a node deployed while the TV is already connected would otherwise wait for the next change
+            if (node.connected && typeof lgtvNode.onTvConnect === 'function') {
+                setImmediate(() => {
+                    if (node.connected && node.users[lgtvNode.id] === lgtvNode) {
+                        lgtvNode.onTvConnect();
+                    }
+                });
+            }
         };
 
         this.deregister = function (lgtvNode, done) {

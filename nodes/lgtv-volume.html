@@ -42,5 +42,10 @@
 
 <script type="text/x-red" data-help-name="lgtv-volume">
     <p>Sound Volume</p>
-    <p><code>msg.payload</code> is a number between 0 and 100</p>
+    <p><b>Input:</b> <code>msg.payload</code> is a number between 0 and 100</p>
+    <p>
+        <b>Output:</b> <code>msg.payload</code> is the current volume - once after connecting (also when the node is
+        deployed while the TV is connected) and on every change; with the pass-through option also the sent
+        <code>msg</code> after a successful command.
+    </p>
 </script>
