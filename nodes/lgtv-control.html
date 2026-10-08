@@ -3,7 +3,8 @@
         category: 'lgtv',
         color: '#C0DEED',
         inputs: 1,
-        outputs: 1,
+        outputs: 2,
+        outputLabels: ['connection state', 'power state'],
         defaults: {
             tv: {
                 value: '',
@@ -62,10 +63,24 @@
         an earlier connection, and needs <i>Mobile TV On</i> / <i>Turn on via Wi-Fi</i> enabled on the TV.
         After turning on it takes about 25 seconds until the TV accepts commands.
     </p>
-    <p><b>Output:</b> Connection State</p>
     <p>
-        A <code>msg.payload</code> <code>true</code> or <code>false</code> is sent when the connection to the TV is
-        established or closed.
+        <code>msg.tv</code> (optional) sends the command to another TV: the name, host or id of an
+        <i>lgtv-config</i> node. Without it the configured TV is used. An unknown name is reported as an error.
+    </p>
+    <p><b>Output 1:</b> Connection State</p>
+    <p>
+        <code>msg.payload</code> <code>true</code> or <code>false</code> whenever the connection to the TV is
+        established or closed, and <code>true</code> once when the node is deployed while the TV is already connected.
+        The connection drops within about 15 seconds after the TV goes to standby, which makes <code>false</code> the
+        practical "TV is off" signal; a TV in deep standby is unreachable until <code>turnOn</code>.
+    </p>
+    <p><b>Output 2:</b> Power State</p>
+    <p>
+        <code>msg.payload</code> is the TV's power state as reported by webOS: <code>on</code>, <code>standby</code>,
+        <code>screen_off</code>, <code>screen_saver</code>, <code>off</code> or <code>unknown</code>;
+        <code>msg.raw</code> is the unmapped answer. Sent once after connecting (and when the node is deployed while
+        the TV is connected) and on every change. While powering down the TV sends a few updates before the state
+        changes. The subscription is only made when this output is wired.
     </p>
     <p>Failed commands are reported as errors and can be handled with a catch node.</p>
 </script>

@@ -38,6 +38,10 @@
     <p><code>msg.topic</code> is the API URL. Example: <code>ssap://com.webos.applicationManager/listLaunchPoints</code></p>
     <p><code>msg.payload</code> is the request payload (an object); anything else is sent as an empty payload.</p>
     <p>
+        <code>msg.tv</code> (optional) sends the request to another TV: the name, host or id of an <i>lgtv-config</i>
+        node. Without it the configured TV is used. An unknown name is reported as an error.
+    </p>
+    <p>
         The response replaces <code>msg.payload</code> on the output. Errors (TV not connected, or an error answer
         from the TV such as <i>404 no such service or method</i>) are reported via <code>node.error</code> and can be
         handled with a catch node.

@@ -1,3 +1,8 @@
+const LGTV = require('lgtv2');
+const {selectTv} = require('./lib/tv-select.js');
+
+const POWER_STATE_URL = 'ssap://com.webos.service.tvpower/power/getPowerState';
+
 module.exports = function (RED) {
     function LgtvControlNode(n) {
         RED.nodes.createNode(this, n);
@@ -6,16 +11,27 @@ module.exports = function (RED) {
         this.tvConn = RED.nodes.getNode(this.tv);
 
         if (this.tvConn) {
-            this.tvConn.register(node);
-
             const onConnect = () => {
-                node.send({payload: true});
+                node.send([{payload: true}, null]);
             };
             const onClose = () => {
-                node.send({payload: false});
+                node.send([{payload: false}, null]);
             };
+            // called by the config node on register when the TV is already connected (deploy while connected)
+            node.onTvConnect = onConnect;
+            this.tvConn.register(node);
+
             node.tvConn.on('tvconnect', onConnect);
             node.tvConn.on('tvclose', onClose);
+
+            // second output: the TV's power state (lgtv2 maps it to on/standby/screen_off/screen_saver/off/unknown)
+            if (Array.isArray(n.wires) && Array.isArray(n.wires[1]) && n.wires[1].length) {
+                node.tvConn.subscribe(node.id, POWER_STATE_URL, (err, res) => {
+                    if (!err && res && res.state) {
+                        node.send([null, {payload: LGTV.POWER_STATES[res.state] || 'unknown', raw: res}]);
+                    }
+                });
+            }
 
             this.on('close', (done) => {
                 node.tvConn.removeListener('tvconnect', onConnect);
@@ -24,6 +40,10 @@ module.exports = function (RED) {
             });
 
             node.on('input', (msg) => {
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
+                    return;
+                }
                 let url;
 
                 switch (msg.payload) {
@@ -66,7 +86,7 @@ module.exports = function (RED) {
 
                     case 'turnOn':
                         // the TV is unreachable while off: Wake-on-LAN instead of an API call
-                        node.tvConn.wake((err) => {
+                        tv.wake((err) => {
                             if (err) {
                                 node.error(err, msg);
                             }
@@ -78,7 +98,7 @@ module.exports = function (RED) {
                         return;
                 }
 
-                node.tvConn.request(url, (err) => {
+                tv.request(url, (err) => {
                     if (err) {
                         node.error(err, msg);
                     }

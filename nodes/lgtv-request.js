@@ -1,3 +1,5 @@
+const {selectTv} = require('./lib/tv-select.js');
+
 module.exports = function (RED) {
     function LgtvRequestNode(n) {
         RED.nodes.createNode(this, n);
@@ -18,8 +20,12 @@ module.exports = function (RED) {
                     node.error(new Error('msg.topic must be the ssap:// uri'), msg);
                     return;
                 }
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
+                    return;
+                }
                 const payload = msg.payload && typeof msg.payload === 'object' ? msg.payload : {};
-                node.tvConn.request(msg.topic, payload, (err, res) => {
+                tv.request(msg.topic, payload, (err, res) => {
                     if (err) {
                         // errors from the TV (e.g. 404 no such service) arrive with code ESSAP
                         node.error(err, msg);

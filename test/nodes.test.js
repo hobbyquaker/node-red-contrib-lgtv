@@ -347,6 +347,109 @@ test.describe('node-red-contrib-lgtv', () => {
         assert.match(err2.message, /msg.topic/);
     });
 
+    test('config: a late subscriber to an already subscribed url gets the current value (#66)', async () => {
+        const tv = await loadConnected(flowWith('mute'));
+        await waitFor(() => mock.requests('ssap://audio/getVolume').length === 1, 2000, 'subscription');
+        await new Promise((r) => setTimeout(r, 50)); // the initial answer has arrived
+        const late = await new Promise((resolve, reject) => {
+            tv.subscribe('late', 'ssap://audio/getVolume', (err, res) => (err ? reject(err) : resolve(res)));
+        });
+        assert.equal(late.volume, 7);
+        assert.equal(late.muted, false);
+        // the replay marks every value field as changed, so a volume node would emit it
+        assert.ok(late.changed.includes('volume') && late.changed.includes('muted'));
+        // only one subscription went to the TV
+        assert.equal(mock.requests('ssap://audio/getVolume').length, 1);
+    });
+
+    test('config: a node registered while the TV is connected is told so (deploy while connected, #66)', async () => {
+        const tv = await loadConnected([configNode()]);
+        let calls = 0;
+        tv.register({id: 'late', status() {}, onTvConnect: () => calls++});
+        await waitFor(() => calls === 1, 1000, 'onTvConnect');
+        await new Promise((r) => setTimeout(r, 20));
+        assert.equal(calls, 1);
+        tv.deregister({id: 'late'});
+    });
+
+    test('control: second output reports the power state on connect and on change (#7)', async () => {
+        await load([
+            configNode(),
+            {id: 'n1', type: 'lgtv-control', tv: 'tv', wires: [['out'], ['power']]},
+            {id: 'out', type: 'helper'},
+            {id: 'power', type: 'helper'},
+        ]);
+        const power = helper.getNode('power');
+        const initial = await nextMessage(power);
+        assert.equal(initial.payload, 'on');
+        assert.equal(initial.raw.state, 'Active');
+        mock.setPowerState('Active Standby');
+        const standby = await nextMessage(power);
+        assert.equal(standby.payload, 'standby');
+        mock.setPowerState('Screen Off');
+        assert.equal((await nextMessage(power)).payload, 'screen_off');
+    });
+
+    test('control: no power-state subscription when the second output is not wired', async () => {
+        await loadConnected(flowWith('control'));
+        await new Promise((r) => setTimeout(r, 50));
+        assert.equal(mock.requests('ssap://com.webos.service.tvpower/power/getPowerState').length, 0);
+    });
+
+    test('request/control: msg.tv selects another TV by config node name (#65)', async () => {
+        const mock2 = await createMockTv();
+        try {
+            await load(
+                [
+                    configNode(),
+                    {
+                        id: 'tv2',
+                        type: 'lgtv-config',
+                        name: 'Bedroom',
+                        host: HOST,
+                        secure: 'ws',
+                        port: String(mock2.port),
+                    },
+                    {id: 'req', type: 'lgtv-request', tv: 'tv', wires: [['out']]},
+                    {id: 'ctl', type: 'lgtv-control', tv: 'tv', wires: [[], []]},
+                    {id: 'out', type: 'helper'},
+                ],
+                {tv: {token: CLIENT_KEY}, tv2: {token: CLIENT_KEY}},
+            );
+            await waitFor(() => helper.getNode('tv').connected && helper.getNode('tv2').connected, 5000, 'both TVs');
+            const req = helper.getNode('req');
+            const out = helper.getNode('out');
+
+            req.receive({tv: 'Bedroom', topic: 'ssap://api/getServiceList'});
+            const res = await nextMessage(out);
+            assert.equal(res.tv, 'Bedroom');
+            assert.deepEqual(res.payload.services, [{name: 'api', version: 1}]);
+            assert.equal(mock2.requests('ssap://api/getServiceList').length, 1);
+            assert.equal(mock.requests('ssap://api/getServiceList').length, 0);
+
+            // by id, and the own TV without msg.tv
+            req.receive({tv: 'tv2', topic: 'ssap://api/getServiceList'});
+            await nextMessage(out);
+            req.receive({topic: 'ssap://api/getServiceList'});
+            await nextMessage(out);
+            assert.equal(mock2.requests('ssap://api/getServiceList').length, 2);
+            assert.equal(mock.requests('ssap://api/getServiceList').length, 1);
+
+            const ctl = helper.getNode('ctl');
+            ctl.receive({tv: 'Bedroom', payload: 'turnOff'});
+            await waitFor(() => mock2.requests('ssap://system/turnOff').length === 1, 2000, 'turnOff on TV 2');
+            assert.equal(mock.requests('ssap://system/turnOff').length, 0);
+
+            // an unknown name is an error on the node, nothing is sent
+            const errPromise = nextError(req);
+            req.receive({tv: 'Garage', topic: 'ssap://api/getServiceList'});
+            const err = await errPromise;
+            assert.match(err.message, /no TV configuration named "Garage"/);
+        } finally {
+            await mock2.close();
+        }
+    });
+
     test('redeploy: listeners are removed, no duplicate connection state messages', async () => {
         await load(flowWith('control'));
         const tv = helper.getNode('tv');

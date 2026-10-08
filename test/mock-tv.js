@@ -39,6 +39,7 @@ function createMockTv(options = {}) {
     let volume = 7;
     let muted = false;
     let channel = {channelId: '1_10_5_0_0_1_1', channelNumber: '5', channelName: 'Mock TV'};
+    let powerState = 'Active';
 
     function send(ws, obj) {
         if (ws.readyState === ws.OPEN) {
@@ -137,6 +138,9 @@ function createMockTv(options = {}) {
                 case 'ssap://tv/getCurrentChannel':
                     ok(Object.assign({subscribed: type === 'subscribe'}, channel));
                     break;
+                case 'ssap://com.webos.service.tvpower/power/getPowerState':
+                    ok({subscribed: type === 'subscribe', state: powerState});
+                    break;
                 case 'ssap://tv/openChannel':
                     channel = Object.assign({}, channel, payload);
                     ok();
@@ -210,6 +214,13 @@ function createMockTv(options = {}) {
                 setVolume(v) {
                     volume = v;
                     notify('ssap://audio/getVolume', () => volumePayload(true));
+                },
+                setPowerState(state) {
+                    powerState = state;
+                    notify('ssap://com.webos.service.tvpower/power/getPowerState', () => ({
+                        returnValue: true,
+                        state,
+                    }));
                 },
                 setMuted(m) {
                     muted = m;
