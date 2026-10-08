@@ -46,6 +46,13 @@ Layout:
 - Avoid breaking changes to node config schemas without a migration path for
   existing flows; stored credentials (the pairing token) must keep working.
 
+## Roadmap
+
+- The roadmap — open items, finished items, the state for a cold start — is kept in
+  the maintainer's agents repository, checked out next to this one as
+  `../she-agent/roadmap-items/node-red-contrib-lgtv/`. It is not part of this
+  repository; commit messages and comments never cite its paths.
+
 ## Working here
 
 - Always run commands through WSL (Debian), never PowerShell/cmd, to avoid
