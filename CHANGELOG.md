@@ -5,12 +5,13 @@ Notable changes to node-red-contrib-lgtv. Format follows
 user-visible symptom and the cause, not the commit list (the release notes
 append commits automatically).
 
-## Unreleased
+## 2.0.3 (2026-10-08)
 
 ### Changed
 
 - `msg.tv` (select the TV per message) works on every node with an input, not only on `control` and
-  `request`. ([#65](https://github.com/hobbyquaker/node-red-contrib-lgtv/issues/65))
+  `request`. ([#65](https://github.com/hobbyquaker/node-red-contrib-lgtv/issues/65), asked by
+  @Jibun-no-Kage — thank you!)
 
 ## 2.0.2 (2026-10-08)
 
