@@ -1,3 +1,5 @@
+const {selectTv} = require('./lib/tv-select.js');
+
 module.exports = function (RED) {
     function LgtvToastNode(n) {
         RED.nodes.createNode(this, n);
@@ -13,6 +15,10 @@ module.exports = function (RED) {
             });
 
             node.on('input', (msg) => {
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
+                    return;
+                }
                 const payload = {message: String(msg.payload)};
                 if (msg.url) {
                     payload.onClick = {target: msg.url};
@@ -25,7 +31,7 @@ module.exports = function (RED) {
                     payload.iconExtension = msg.iconExtension || 'png';
                 }
 
-                node.tvConn.request('ssap://system.notifications/createToast', payload, (err) => {
+                tv.request('ssap://system.notifications/createToast', payload, (err) => {
                     if (err) {
                         node.error(err, msg);
                     }

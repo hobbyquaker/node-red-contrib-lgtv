@@ -1,3 +1,5 @@
+const {selectTv} = require('./lib/tv-select.js');
+
 module.exports = function (RED) {
     function LgtvMouseNode(n) {
         RED.nodes.createNode(this, n);
@@ -13,9 +15,13 @@ module.exports = function (RED) {
             });
 
             node.on('input', (msg) => {
-                const socket = node.tvConn.buttonSocket;
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
+                    return;
+                }
+                const socket = tv.buttonSocket;
                 if (!socket) {
-                    node.error(new Error('not connected to ' + node.tvConn.host), msg);
+                    node.error(new Error('not connected to ' + tv.host), msg);
                     return;
                 }
 

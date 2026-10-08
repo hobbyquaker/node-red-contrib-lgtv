@@ -1,3 +1,5 @@
+const {selectTv} = require('./lib/tv-select.js');
+
 module.exports = function (RED) {
     function LgtvChannelNode(n) {
         RED.nodes.createNode(this, n);
@@ -54,12 +56,16 @@ module.exports = function (RED) {
             }
 
             node.on('input', (msg) => {
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
+                    return;
+                }
                 // a number selects by channel number, a string is the channelId
                 const payload =
                     typeof msg.payload === 'number'
                         ? {channelNumber: String(msg.payload)}
                         : {channelId: String(msg.payload)};
-                node.tvConn.request('ssap://tv/openChannel', payload, (err) => {
+                tv.request('ssap://tv/openChannel', payload, (err) => {
                     if (err) {
                         node.error(err, msg);
                     } else if (node.passthru) {

@@ -1,3 +1,5 @@
+const {selectTv} = require('./lib/tv-select.js');
+
 module.exports = function (RED) {
     function LgtvAppNode(n) {
         RED.nodes.createNode(this, n);
@@ -26,8 +28,12 @@ module.exports = function (RED) {
             }
 
             node.on('input', (msg) => {
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
+                    return;
+                }
                 msg.payload = String(msg.payload);
-                node.tvConn.request('ssap://system.launcher/launch', {id: msg.payload}, (err) => {
+                tv.request('ssap://system.launcher/launch', {id: msg.payload}, (err) => {
                     if (err) {
                         node.error(err, msg);
                     } else if (node.passthru) {

@@ -1,3 +1,5 @@
+const {selectTv} = require('./lib/tv-select.js');
+
 module.exports = function (RED) {
     function LgtvBrowserNode(n) {
         RED.nodes.createNode(this, n);
@@ -14,6 +16,10 @@ module.exports = function (RED) {
             });
 
             node.on('input', (msg) => {
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
+                    return;
+                }
                 const done = (err) => {
                     if (err) {
                         node.error(err, msg);
@@ -22,9 +28,9 @@ module.exports = function (RED) {
                     }
                 };
                 if (msg.payload) {
-                    node.tvConn.request('ssap://system.launcher/open', {target: String(msg.payload)}, done);
+                    tv.request('ssap://system.launcher/open', {target: String(msg.payload)}, done);
                 } else {
-                    node.tvConn.request('ssap://system.launcher/close', {id: 'com.webos.app.browser'}, done);
+                    tv.request('ssap://system.launcher/close', {id: 'com.webos.app.browser'}, done);
                 }
             });
         } else {

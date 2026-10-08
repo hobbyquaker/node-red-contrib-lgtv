@@ -70,8 +70,8 @@ TV) are reported through `node.error` and can be handled with a **catch** node.
 Nodes with an output send the current value once after connecting (also when they are deployed while the TV is
 already connected) and then on every change.
 
-**Several TVs:** the `control` and `request` nodes accept `msg.tv` with the name, host or id of an _lgtv-config_
-node and send that message to this TV instead of the configured one; an unknown name is reported as an error.
+**Several TVs:** every node with an input accepts `msg.tv` with the name, host or id of an _lgtv-config_ node and
+sends that message to this TV instead of the configured one; an unknown name is reported as an error.
 
 ## Usage Example
 

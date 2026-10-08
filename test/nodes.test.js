@@ -396,7 +396,7 @@ test.describe('node-red-contrib-lgtv', () => {
         assert.equal(mock.requests('ssap://com.webos.service.tvpower/power/getPowerState').length, 0);
     });
 
-    test('request/control: msg.tv selects another TV by config node name (#65)', async () => {
+    test('msg.tv selects another TV by config node name on every input node (#65)', async () => {
         const mock2 = await createMockTv();
         try {
             await load(
@@ -412,6 +412,8 @@ test.describe('node-red-contrib-lgtv', () => {
                     },
                     {id: 'req', type: 'lgtv-request', tv: 'tv', wires: [['out']]},
                     {id: 'ctl', type: 'lgtv-control', tv: 'tv', wires: [[], []]},
+                    {id: 'vol', type: 'lgtv-volume', tv: 'tv', passthru: false, wires: [[]]},
+                    {id: 'btn', type: 'lgtv-button', tv: 'tv', wires: [[]]},
                     {id: 'out', type: 'helper'},
                 ],
                 {tv: {token: CLIENT_KEY}, tv2: {token: CLIENT_KEY}},
@@ -439,6 +441,15 @@ test.describe('node-red-contrib-lgtv', () => {
             ctl.receive({tv: 'Bedroom', payload: 'turnOff'});
             await waitFor(() => mock2.requests('ssap://system/turnOff').length === 1, 2000, 'turnOff on TV 2');
             assert.equal(mock.requests('ssap://system/turnOff').length, 0);
+
+            // every input node takes msg.tv: volume (request) and button (pointer socket) go to TV 2
+            await waitFor(() => helper.getNode('tv2').buttonSocket, 5000, 'pointer socket of TV 2');
+            helper.getNode('vol').receive({tv: 'Bedroom', payload: 12});
+            await waitFor(() => mock2.requests('ssap://audio/setVolume').length === 1, 2000, 'volume on TV 2');
+            assert.equal(mock.requests('ssap://audio/setVolume').length, 0);
+            helper.getNode('btn').receive({tv: 'tv2', payload: 'home'});
+            await waitFor(() => mock2.pointer.length === 1, 2000, 'button on TV 2');
+            assert.equal(mock.pointer.length, 0);
 
             // an unknown name is an error on the node, nothing is sent
             const errPromise = nextError(req);

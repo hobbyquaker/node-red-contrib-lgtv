@@ -1,3 +1,5 @@
+const {selectTv} = require('./lib/tv-select.js');
+
 module.exports = function (RED) {
     function LgtvVolumeNode(n) {
         RED.nodes.createNode(this, n);
@@ -25,6 +27,10 @@ module.exports = function (RED) {
             }
 
             node.on('input', (msg) => {
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
+                    return;
+                }
                 msg.payload = parseInt(msg.payload, 10) || 0;
                 if (msg.payload > 100) {
                     msg.payload = 100;
@@ -32,7 +38,7 @@ module.exports = function (RED) {
                     msg.payload = 0;
                 }
 
-                node.tvConn.request('ssap://audio/setVolume', {volume: msg.payload}, (err) => {
+                tv.request('ssap://audio/setVolume', {volume: msg.payload}, (err) => {
                     if (err) {
                         node.error(err, msg);
                     } else if (node.passthru) {

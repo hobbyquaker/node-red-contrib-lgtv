@@ -1,3 +1,5 @@
+const {selectTv} = require('./lib/tv-select.js');
+
 module.exports = function (RED) {
     function LgtvButtonNode(n) {
         RED.nodes.createNode(this, n);
@@ -17,11 +19,15 @@ module.exports = function (RED) {
                 if (msg.payload === undefined || msg.payload === null || msg.payload === '') {
                     return;
                 }
-                if (!node.tvConn.buttonSocket) {
-                    node.error(new Error('not connected to ' + node.tvConn.host), msg);
+                const tv = selectTv(RED, node, msg);
+                if (!tv) {
                     return;
                 }
-                node.tvConn.buttonSocket.send('button', {name: String(msg.payload).toUpperCase()});
+                if (!tv.buttonSocket) {
+                    node.error(new Error('not connected to ' + tv.host), msg);
+                    return;
+                }
+                tv.buttonSocket.send('button', {name: String(msg.payload).toUpperCase()});
             });
         } else {
             this.error('No TV Configuration');
