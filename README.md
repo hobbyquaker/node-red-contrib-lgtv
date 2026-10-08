@@ -50,22 +50,28 @@ works.
 
 ## Nodes
 
-| node      | input                                                                                  | output                                   |
-| --------- | -------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `control` | `turnOn`, `turnOff`, `turnOnScreen`, `turnOffScreen`, `play`, `pause`, `volumeUp`, ... | connection state `true`/`false`          |
-| `app`     | app id, e.g. `netflix`, `com.webos.app.hdmi1`                                          | foreground app id                        |
-| `volume`  | 0..100                                                                                 | volume changes                           |
-| `mute`    | `true`/`false`                                                                         | mute changes                             |
-| `channel` | `channelId` (string) or channel number (number)                                        | current channel while LiveTV is in front |
-| `button`  | remote button name, e.g. `HOME`, `ENTER`, `0`..`9`                                     |                                          |
-| `mouse`   | `msg.topic` `move`/`drag`/`scroll` with `{dx, dy}`, or `click`                         |                                          |
-| `toast`   | message text; optional `msg.url`, `msg.iconData`, `msg.iconExtension`                  |                                          |
-| `browser` | URL to open, empty string closes the browser                                           |                                          |
-| `youtube` | video id or video URL                                                                  |                                          |
-| `request` | `msg.topic` = `ssap://...` uri, `msg.payload` = request payload                        | the response                             |
+| node      | input                                                                                  | output                                                                               |
+| --------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `control` | `turnOn`, `turnOff`, `turnOnScreen`, `turnOffScreen`, `play`, `pause`, `volumeUp`, ... | 1: connection state `true`/`false`; 2: power state `on`/`standby`/`screen_off`/`off` |
+| `app`     | app id, e.g. `netflix`, `com.webos.app.hdmi1`                                          | foreground app id                                                                    |
+| `volume`  | 0..100                                                                                 | volume changes                                                                       |
+| `mute`    | `true`/`false`                                                                         | mute changes                                                                         |
+| `channel` | `channelId` (string) or channel number (number)                                        | current channel while LiveTV is in front                                             |
+| `button`  | remote button name, e.g. `HOME`, `ENTER`, `0`..`9`                                     |                                                                                      |
+| `mouse`   | `msg.topic` `move`/`drag`/`scroll` with `{dx, dy}`, or `click`                         |                                                                                      |
+| `toast`   | message text; optional `msg.url`, `msg.iconData`, `msg.iconExtension`                  |                                                                                      |
+| `browser` | URL to open, empty string closes the browser                                           |                                                                                      |
+| `youtube` | video id or video URL                                                                  |                                                                                      |
+| `request` | `msg.topic` = `ssap://...` uri, `msg.payload` = request payload                        | the response                                                                         |
 
 Every node has a help text in the editor with the details. Failed requests (TV not connected, error answer from the
 TV) are reported through `node.error` and can be handled with a **catch** node.
+
+Nodes with an output send the current value once after connecting (also when they are deployed while the TV is
+already connected) and then on every change.
+
+**Several TVs:** the `control` and `request` nodes accept `msg.tv` with the name, host or id of an _lgtv-config_
+node and send that message to this TV instead of the configured one; an unknown name is reported as an error.
 
 ## Usage Example
 

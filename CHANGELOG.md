@@ -5,6 +5,33 @@ Notable changes to node-red-contrib-lgtv. Format follows
 user-visible symptom and the cause, not the commit list (the release notes
 append commits automatically).
 
+## 2.0.2 (2026-10-08)
+
+### Fixed
+
+- A `control`, `volume`, `mute`, `app` or `channel` node added to a flow while the TV was already
+  connected stayed silent until the next change: the config node keeps one subscription per API
+  endpoint and gave a node that subscribed later nothing, so of two nodes on the volume endpoint
+  only the first saw the initial answer ("mute outputs, volume does not"), and the `control` node
+  only reported `true`/`false` on a connection change. Nodes now get the current value when they
+  are deployed, and the help texts say what each node outputs.
+  ([#66](https://github.com/hobbyquaker/node-red-contrib-lgtv/issues/66), reported by
+  @Jibun-no-Kage — thank you!)
+
+### Added
+
+- `control` node: a second output with the TV's power state as webOS reports it (`on`,
+  `standby`, `screen_off`, `screen_saver`, `off`, `unknown`; `msg.raw` holds the unmapped
+  answer), sent once after connecting and on every change. The subscription is only made when
+  the output is wired. `screen_saver` and the updates the TV sends while powering down are
+  unverified on hardware.
+  ([#7](https://github.com/hobbyquaker/node-red-contrib-lgtv/issues/7), requested by @rcarmo
+  and many others since 2018 — thank you!)
+- `control` and `request` nodes: `msg.tv` selects the TV per message by the name, host or id of
+  an _lgtv-config_ node, so one node can serve several TVs; an unknown name is an error on the
+  node. ([#65](https://github.com/hobbyquaker/node-red-contrib-lgtv/issues/65), suggested by
+  @Jibun-no-Kage — thank you!)
+
 ## 2.0.1 (2026-09-05)
 
 ### Fixed
