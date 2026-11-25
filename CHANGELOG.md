@@ -5,6 +5,19 @@ Notable changes to node-red-contrib-lgtv. Format follows
 user-visible symptom and the cause, not the commit list (the release notes
 append commits automatically).
 
+## 2.0.4 (2026-11-25)
+
+### Added
+
+- Connection problems are written to the Node-RED log, one line each instead of only a code in the
+  node status: a lost connection with its close code and whether the TV stopped answering the
+  keepalive or closed the connection itself, a failed reconnect with what each port (wss:3001,
+  ws:3000) answered (the `ECONNFAILED` status), and "connected to …" once the TV is back. Equal
+  errors are logged once until the next successful connect; a redeploy logs nothing. Needs lgtv2
+  2.1.1, which reports whether the keepalive dropped a connection.
+  ([#69](https://github.com/hobbyquaker/node-red-contrib-lgtv/issues/69), reported by @Defplayr —
+  thank you!)
+
 ## 2.0.3 (2026-10-08)
 
 ### Changed

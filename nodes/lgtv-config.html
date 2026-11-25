@@ -123,4 +123,9 @@
         <i>Turn on via Wi-Fi</i> (2025+ models: <i>IP control settings → Wake on LAN</i>) enabled.
     </p>
     <p>Note: after switching the TV on it takes about 25 seconds until its API is available.</p>
+    <p>
+        Connection problems are written to the Node-RED log as warnings, one line each: a lost connection with
+        its close code and whether the TV stopped answering or closed it, and a failed reconnect with what each
+        port answered. Once the TV is reachable again a line "connected to …" follows.
+    </p>
 </script>

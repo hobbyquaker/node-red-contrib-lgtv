@@ -471,6 +471,45 @@ test.describe('node-red-contrib-lgtv', () => {
         await waitFor(() => mock.connections === 0, 5000, 'connection closed on unload');
     });
 
+    test('diagnostics: a drop and the failed reconnects are logged once each, the reconnect too', async () => {
+        const tv = await loadConnected([configNode()]);
+        const port = mock.port;
+        const warnings = () => tv.warn.getCalls().map((c) => String(c.args[0]));
+
+        // the TV goes away: the close is logged with its code and who closed it
+        await mock.close();
+        await waitFor(() => warnings().length === 1, 2000, 'close warning');
+        assert.match(
+            warnings()[0],
+            /^connection to 127\.0\.0\.1 closed \(code 1006\): closed by the TV or the network$/,
+        );
+
+        // the reconnect (5 s later) is refused: one line with the error
+        await waitFor(() => warnings().length === 2, 8000, 'connect error warning');
+        assert.match(warnings()[1], /^127\.0\.0\.1: .*ECONNREFUSED/);
+
+        // the next attempt fails the same way: no second line
+        await new Promise((r) => setTimeout(r, 5500));
+        assert.equal(warnings().length, 2, 'equal errors are not repeated');
+        assert.equal(tv.connected, false);
+
+        // the TV is back: one log line, so the log shows how long it was away
+        mock = await createMockTv({port});
+        await waitFor(() => tv.connected, 8000, 'reconnect');
+        assert.ok(
+            tv.log.getCalls().some((c) => String(c.args[0]) === 'connected to 127.0.0.1'),
+            'reconnect logged',
+        );
+
+        // a redeploy closes the connection on purpose: nothing is logged
+        const late = [];
+        tv.warn = (text) => late.push(text);
+        await helper.unload();
+        await waitFor(() => mock.connections === 0, 5000, 'connection closed on unload');
+        await new Promise((r) => setTimeout(r, 50));
+        assert.deepEqual(late, []);
+    });
+
     test('editor pairing endpoint: returns the token once the TV accepted', async () => {
         await load([{id: 'x', type: 'lgtv-config', host: 'unused.invalid', secure: 'ws', port: '1'}]);
         const url = '/lgtv-connect?id=new&host=' + HOST + '&secure=ws&port=' + mock.port;

@@ -58,11 +58,28 @@ module.exports = function (RED) {
             },
         });
 
+        // Connection problems go to the Node-RED log, one line each: the status only has room for a code,
+        // and "ECONNFAILED" alone does not say what each port answered. lgtv2 already reports equal
+        // connection errors once until the next successful connect; the same holds here for all of them.
+        let lastWarning;
+        let stopping = false; // a redeploy or shutdown closes the connection on purpose: nothing to report
+        const warnOnce = (text) => {
+            if (!stopping && text !== lastWarning) {
+                lastWarning = text;
+                node.warn(text);
+            }
+        };
+
         lgtv.on('connecting', () => {
             node.setStatus('connecting');
         });
 
         lgtv.on('connect', () => {
+            if (lastWarning !== undefined) {
+                // closes the story the warnings told: the log shows how long the TV was away
+                node.log('connected to ' + node.host);
+                lastWarning = undefined;
+            }
             node.connected = true;
             node.setStatus('connect');
 
@@ -84,12 +101,30 @@ module.exports = function (RED) {
         });
 
         lgtv.on('error', (err) => {
+            // for ECONNFAILED the message holds what each port (wss:3001, ws:3000) answered
+            const code = err.code && !String(err.message).includes(err.code) ? err.code + ' ' : '';
+            warnOnce(node.host + ': ' + code + err.message);
             node.connected = false;
             node.setStatus(err.code || err.message);
         });
 
-        lgtv.on('close', () => {
+        lgtv.on('close', (info) => {
             const wasConnected = node.connected;
+            if (wasConnected) {
+                const {code, reason, keepaliveTimeout} = info || {};
+                const why = keepaliveTimeout
+                    ? 'the TV stopped answering the keepalive ping'
+                    : 'closed by the TV or the network';
+                warnOnce(
+                    'connection to ' +
+                        node.host +
+                        ' closed (code ' +
+                        code +
+                        (reason ? ', ' + reason : '') +
+                        '): ' +
+                        why,
+                );
+            }
             node.connected = false;
             node.buttonSocket = null;
             Object.keys(lastResponse).forEach((url) => delete lastResponse[url]);
@@ -104,6 +139,7 @@ module.exports = function (RED) {
         });
 
         node.on('close', (removed, done) => {
+            stopping = true;
             lgtv.disconnect(() => done());
         });
 
